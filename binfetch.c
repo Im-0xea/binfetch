@@ -52,7 +52,7 @@ static void pair_parser(const byte val, const pr * prs, const size_t size, const
 	{
 		if (prs[c].key == val)
 		{
-			puts(prs[c].str);
+			printf("%s\n", prs[c].str);
 			break;
 		}
 		else if(++c == size)
@@ -113,9 +113,12 @@ static void elf_parser(FILE * fp)
 	
 	pair_parser(tok[3], osabis, sizeof osabis / sizeof(pr), "abi");
 	
-	print_label("ABI Version");
-	
-	printf("%d", tok[4]);
+	if (tok[4] != 0)
+	{
+		print_label("ABI Version");
+		
+		printf("%d\n", tok[4]);
+	}
 	
 	advance(tok, 7, fp);
 	
