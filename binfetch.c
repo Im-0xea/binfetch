@@ -66,15 +66,11 @@ static void elf_parser(FILE * fp)
 {
 	byte tok[max_tok];
 	
-	advance(tok, 4, fp);
+	advance(tok, 5, fp);
 	
 	int bits = 0 ;// 32 or 64
 	
-	set_color(col);
-	
-	printf("Class: ");
-	
-	set_color(blank);
+	print_label("Class");
 	
 	if (tok[0] == 0x01)	
 	{
@@ -87,11 +83,7 @@ static void elf_parser(FILE * fp)
 		printf("64 bit\n");
 	}
 	
-	set_color(col);
-	
-	printf("Endianness: ");
-	
-	set_color(blank);
+	print_label("Endianness");
 	
 	if (tok[1] == 0x01)
 	{
@@ -101,12 +93,12 @@ static void elf_parser(FILE * fp)
 	{
 		printf("big endian\n");
 	}
+	else
+	{
+		printf("unknown endian\n");
+	}
 	
-	set_color(col);
-	
-	printf("Version: ");
-	
-	set_color(blank);
+	print_label("Version");
 	
 	if (tok[2] == 0x01)
 	{
@@ -117,25 +109,21 @@ static void elf_parser(FILE * fp)
 		printf("noncompliant\n");
 	}
 	
-	set_color(col);
-	
-	printf("OS ABI: ");
-	
-	set_color(blank);
+	print_label("OS ABI");
 	
 	pair_parser(tok[3], osabis, sizeof osabis / sizeof(pr), "abi");
 	
-	advance(tok, bits == 1 ? 4 : 8, fp);
+	print_label("ABI Version");
+	
+	printf("%d", tok[4]);
+	
+	advance(tok, 7, fp);
 	
 	// do nothing
 	
 	advance(tok, 2, fp);
 	
-	set_color(col);
-	
-	printf("Type: ");
-	
-	set_color(blank);
+	print_label("Type");
 	
 	switch (tok[0])
 	{
@@ -154,11 +142,7 @@ static void elf_parser(FILE * fp)
 	
 	advance(tok, 2, fp);
 	
-	set_color(col);
-	
-	printf("Arch: ");
-	
-	set_color(blank);
+	print_label("Arch");
 	
 	pair_parser(tok[0], arches, sizeof arches / sizeof(pr), "arch");
 	
@@ -168,11 +152,7 @@ static void elf_parser(FILE * fp)
 	
 	advance(tok, bits == 1 ? 4 : 8, fp);
 	
-	set_color(col);
-	
-	printf("Entry: ");
-	
-	set_color(blank);
+	print_label("Entry");
 	
 	printf("0x");
 	
@@ -221,11 +201,7 @@ int main(int argc, char **argv)
 	
 	advance(tok, 4, fp);
 	
-	set_color(col);
-	
-	printf("Header: ");
-	
-	set_color(blank);
+	print_label("Header");
 	
 	if (!strcmp(tok + 1, "ELF"))
 	{
