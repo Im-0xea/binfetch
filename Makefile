@@ -1,6 +1,7 @@
 PREFIX=/usr
 
 all:
+	ib -in pair.h.ib
 	ib -in binfetch.c.ib
 
 bootstrap:

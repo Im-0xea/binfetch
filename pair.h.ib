@@ -1,0 +1,6 @@
+typedef unsigned char byte
+
+typedef struct pair
+	byte key
+	char str[32]
+pr

@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 	puts(basename(argv[1]));
 	
 	
-	char tok[max_tok];
+	unsigned char tok[max_tok];
 	
 	bzero(tok, max_tok);
 	
