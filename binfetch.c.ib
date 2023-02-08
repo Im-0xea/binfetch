@@ -87,8 +87,8 @@ static void elf_parser(FILE * fp)
 		
 		printf("%d\n", tok[4])
 	
-	advance(tok, 7, fp)
-	
+	while (fread(tok, 1, 1, fp) && tok[0] == 0)
+	fseek(fp, -1, SEEK_CUR);
 	// do nothing
 	
 	advance(tok, 2, fp)
@@ -106,7 +106,7 @@ static void elf_parser(FILE * fp)
 			printf("Shared\n")
 			break
 		default:
-			printf("unknown object type %d\n", tok[0])
+			printf("Unknown object type %d\n", tok[0])
 	
 	advance(tok, 2, fp)
 	
