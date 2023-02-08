@@ -69,7 +69,7 @@ static void spair_parser(const byte val, const spr * prs, const size_t size, con
 	}
 }
 
-static void bpair_parser(const byte val, const bpr * prs, const size_t size, const char * type)
+static void bpair_parser(const fbyte val, const bpr * prs, const size_t size, const char * type)
 {
 	size_t c = 0;
 	while(c < size)
@@ -81,7 +81,7 @@ static void bpair_parser(const byte val, const bpr * prs, const size_t size, con
 		}
 		else if(++c == size)
 		{
-			printf("unknown %s (%lu)\n", type, val);
+			printf("unknown %s (0x%lx)\n", type, val);
 		}
 	}
 }
@@ -105,6 +105,10 @@ static void elf_parser(FILE * fp)
 	{
 		bits = 2;
 		printf("64 bit\n");
+	}
+	else
+	{
+		printf("unknown");
 	}
 	
 	print_label("Endianness");
@@ -216,15 +220,98 @@ static void elf_parser(FILE * fp)
 	}
 }
 
-static void mach_parser(FILE * fp)
+static void mach_parser(FILE * fp, int bit, int end)
 {
 	fbyte tok = 0;
+	int bits = 0 ;// 32 or 64
 	
 	advance(&tok, 4, fp);
 	
-	print_label("Cpu Type");
+	print_label("Arch");
 	
 	bpair_parser(tok, mach_arches, sizeof mach_arches / sizeof(bpr), "cpu type");
+	
+	fbyte cls = (tok >> 24);
+	print_label("Class");
+	
+	if (cls == 0x00)	
+	{
+		bits = 1;
+		printf("32 bit\n");
+	}
+	else if (cls == 0x1)
+	{
+		bits = 2;
+		printf("64 bit\n");
+	}
+	else if (cls == 0x2)
+	{
+		bits = 2;
+		printf("LP 32\n");
+	}
+	else
+	{
+		printf("unknown (%lx)", cls);
+	}
+	
+	print_label("Endianness");
+	if (end == 0)
+	{
+		printf("little endian\n");
+	}
+	else if (end == 1)
+	{
+		printf("big endian\n");
+	}
+	else
+	{
+		printf("unknown endian\n");
+	}
+	
+	advance(&tok, 4, fp);
+	advance(&tok, 4, fp);
+	
+	print_label("Type");
+	
+	switch (tok)
+	{
+		case 0x00:
+		case 0x01:
+			printf("Object\n");
+			break;
+		case 0x02:
+			printf("Static\n");
+			break;
+		case 0x03:
+			printf("FVM Library\n");
+			break;
+		case 0x04:
+			printf("Core Dump\n");
+			break;
+		case 0x05:
+			printf("Preload\n");
+			break;
+		case 0x06:
+			printf("Dynamic Library\n");
+			break;
+		case 0x07:
+			printf("Dynamic Linker\n");
+			break;
+		case 0x08:
+			printf("Bundle\n");
+			break;
+		case 0x09:
+			printf("Dynamic Library Stub\n");
+			break;
+		case 0x0a:
+			printf("Debug Symbols\n");
+			break;
+		case 0x0b:
+			printf("Kernel Extension Bundle\n");
+			break;
+		default:
+			printf("Unknown object type %lx\n", tok);
+	}
 	
 	
 	return;
@@ -256,7 +343,7 @@ int main(int argc, char **argv)
 	puts(basename(argv[1]));
 	
 	
-	unsigned long tok = 0;
+	fbyte tok = 0;
 	
 	advance(&tok, 4, fp);
 	
@@ -267,10 +354,11 @@ int main(int argc, char **argv)
 		printf("ELF\n");
 		elf_parser(fp);
 	}
-	else if (tok == 0xfeedfacf)
+	else if (tok == 0xfeedfacf || tok == 0xfeedfacf || tok == 0xcefaedfe || tok == 0xcffaedfe)
 	{
 		printf("MACH-O\n");
-		mach_parser(fp);
+		int cond = tok >> 24 != 0xfe;
+		mach_parser(fp, cond, !cond ? tok << 24 == 0xce ? 0 : 1 : tok >> 24 == 0xce ? 0 : 1);
 	}
 	else
 	{
