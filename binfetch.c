@@ -44,6 +44,23 @@ static void advance(byte * tok, const size_t n, FILE * fp)
 	fread(tok, n, 1, fp);
 }
 
+static void pair_parser(const byte val, const pr * prs, const size_t size, const char * type)
+{
+	size_t c = 0;
+	while(c < size)
+	{
+		if (prs[c].key == val)
+		{
+			puts(prs[c].str);
+			break;
+		}
+		else if(++c == size)
+		{
+			printf("unknown %s %d", type, val);
+		}
+	}
+}
+
 int main(int argc, char **argv)
 {
 	
@@ -142,19 +159,7 @@ int main(int argc, char **argv)
 	
 	set_color(blank);
 	
-	size_t osabic = 0;
-	while(osabic < sizeof osabis / sizeof(pr))
-	{
-		if (osabis[osabic].key == tok[3])
-		{
-			puts(osabis[osabic].str);
-			break;
-		}
-		else if(++osabic == sizeof osabis / sizeof(pr))
-		{
-			printf("unknown abi %d", tok[3]);
-		}
-	}
+	pair_parser(tok[3], osabis, sizeof osabis / sizeof(pr), "abi");
 	
 	advance(tok, bits == 1 ? 4 : 8, fp);
 	
@@ -191,19 +196,7 @@ int main(int argc, char **argv)
 	
 	set_color(blank);
 	
-	size_t archc = 0;
-	while(archc < sizeof arches / sizeof(pr))
-	{
-		if (arches[archc].key == tok[0])
-		{
-			puts(arches[archc].str);
-			break;
-		}
-		else if(++archc == sizeof arches / sizeof(pr))
-		{
-			printf("unknown arch %d", tok[0]);
-		}
-	}
+	pair_parser(tok[0], arches, sizeof arches / sizeof(pr), "arch");
 	
 	advance(tok, 4, fp);
 	
