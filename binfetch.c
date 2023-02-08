@@ -166,17 +166,37 @@ static void elf_parser(FILE * fp)
 	printf("0x");
 	
 	{
-		size_t b = 0;
-		while (b < (bits == 1 ? 4 : 8))
+		char out[128] = "";
+		signed long b = bits == 1 ? 4 : 8;
+		while (--b >= 0)
 		{
-			printf("%x", tok[b]);
-			++b;
+			if (!tok[b]) continue;
+			char bit[3];
+			sprintf(bit, "%02x", tok[b]);
+			strcat(out,bit);
 		}
+		
+		printf("%s\n", out);
 	}
 	
-	set_color(col);
+	advance(tok, bits == 1 ? 4 : 8, fp);
+	print_label("Table");
+	printf("0x");
 	
-	printf("\n");
+	{
+		char out[128] = "";
+		signed long b = bits == 1 ? 4 : 8;
+		while (--b >= 0)
+		{
+			if (!tok[b]) continue;
+			char bit[3];
+			sprintf(bit, "%02x", tok[b]);
+			strcat(out,bit);
+		}
+		
+		printf("%s\n", out);
+	}
+	
 	
 }
 
@@ -222,9 +242,7 @@ int main(int argc, char **argv)
 		printf("unknown\n");
 	}
 	
-	printf("Size: ");
-	
-	set_color(blank);
+	print_label("Size");
 	
 	struct stat st;
 	stat(argv[1], &st);

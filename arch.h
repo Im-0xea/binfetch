@@ -4,7 +4,7 @@ const struct pair arches[] =
 {
 	{
 		.key = 0x00,
-		.str = "No specific instruction set"
+		.str = "Unknown instruction set"
 	},
 	
 	{
@@ -24,12 +24,12 @@ const struct pair arches[] =
 	
 	{
 		.key = 0x04,
-		.str = "Motorola 68000 (M68k)"
+		.str = "M68k"
 	},
 	
 	{
 		.key = 0x05,
-		.str = "Motorola 88000 (M88k)"
+		.str = "M88k"
 	},
 	
 	{
@@ -54,22 +54,22 @@ const struct pair arches[] =
 	
 	{
 		.key = 0x0A,
-		.str = "MIPS RS3000 Little-endian"
+		.str = "MIPS RS3000"
 	},
 	
 	{
 		.key = 0x0B,
-		.str = "- 0x0D	Reserved for future use"
+		.str = "Unknown instruction set"
 	},
 	
 	{
 		.key = 0x0E,
-		.str = "Hewlett-Packard PA-RISC"
+		.str = "PA-RISC"
 	},
 	
 	{
 		.key = 0x0F,
-		.str = "Reserved for future use"
+		.str = "Unknown instruction set"
 	},
 	
 	{
@@ -84,12 +84,12 @@ const struct pair arches[] =
 	
 	{
 		.key = 0x15,
-		.str = "PowerPC (64-bit)"
+		.str = "PowerPC"
 	},
 	
 	{
 		.key = 0x16,
-		.str = "S390, including S390x"
+		.str = "S390(x)"
 	},
 	
 	{
@@ -99,7 +99,7 @@ const struct pair arches[] =
 	
 	{
 		.key = 0x18,
-		.str = "- 0x23	Reserved for future use"
+		.str = "Unknown instruction set"
 	},
 	
 	{
@@ -124,7 +124,7 @@ const struct pair arches[] =
 	
 	{
 		.key = 0x28,
-		.str = "Arm (up to Armv7/AArch32)"
+		.str = "Armv7"
 	},
 	
 	{
@@ -139,7 +139,7 @@ const struct pair arches[] =
 	
 	{
 		.key = 0x2B,
-		.str = "SPARC Version 9"
+		.str = "SPARCv9"
 	},
 	
 	{
@@ -179,7 +179,7 @@ const struct pair arches[] =
 	
 	{
 		.key = 0x33,
-		.str = "Stanford MIPS-X"
+		.str = "MIPS-X"
 	},
 	
 	{
@@ -234,7 +234,7 @@ const struct pair arches[] =
 	
 	{
 		.key = 0x3E,
-		.str = "AMD x86-64"
+		.str = "x86-64"
 	},
 	
 	{
