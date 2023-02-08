@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <libgen.h>
+
 #include <sys/stat.h>
 
 
@@ -42,7 +44,11 @@ static void print_label(const char * label)
 static void advance(byte * tok, const size_t n, FILE * fp)
 {
 	bzero(tok, max_tok);
-	fread(tok, n, 1, fp);
+	if (!fread(tok, n, 1, fp))
+	{
+		printf("error reading from file\n");
+		exit(1);
+	}
 }
 
 static void pair_parser(const byte val, const pr * prs, const size_t size, const char * type)
@@ -121,7 +127,7 @@ static void elf_parser(FILE * fp)
 	}
 	
 	while (fread(tok, 1, 1, fp) && tok[0] == 0);
-	fseek(fp, -1, SEEK_CUR);;
+	fseek(fp, -1, SEEK_CUR);
 	// do nothing
 	
 	advance(tok, 2, fp);
