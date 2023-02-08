@@ -61,46 +61,9 @@ static void pair_parser(const byte val, const pr * prs, const size_t size, const
 	}
 }
 
-int main(int argc, char **argv)
+static void elf_parser(FILE * fp)
 {
-	
-	if (argc < 2)
-	{
-		set_color(red);
-		printf("you did not provide a binary\n");
-		set_color(blank);
-		return 1;
-	}
-	
-	FILE * fp = fopen(argv[1], "rb");
-	
-	if (!fp)
-	{
-		set_color(red);
-		printf("failed to open binary\n");
-		set_color(blank);
-		return 1;
-	}
-	
-	print_label("Name");
-	
-	puts(basename(argv[1]));
-	
-	
 	byte tok[max_tok];
-	
-	advance(tok, 4, fp);
-	
-	set_color(col);
-	
-	printf("Header: ");
-	
-	set_color(blank);
-	
-	if (!strcmp(tok + 1, "ELF"))
-	{
-		printf("ELF\n");
-	}
 	
 	advance(tok, 4, fp);
 	
@@ -224,6 +187,51 @@ int main(int argc, char **argv)
 	set_color(col);
 	
 	printf("\n");
+	
+}
+
+int main(int argc, char **argv)
+{
+	
+	if (argc < 2)
+	{
+		set_color(red);
+		printf("you did not provide a binary\n");
+		set_color(blank);
+		return 1;
+	}
+	
+	FILE * fp = fopen(argv[1], "rb");
+	
+	if (!fp)
+	{
+		set_color(red);
+		printf("failed to open binary\n");
+		set_color(blank);
+		return 1;
+	}
+	
+	print_label("Name");
+	
+	puts(basename(argv[1]));
+	
+	
+	byte tok[max_tok];
+	
+	advance(tok, 4, fp);
+	
+	set_color(col);
+	
+	printf("Header: ");
+	
+	set_color(blank);
+	
+	if (!strcmp(tok + 1, "ELF"))
+	{
+		printf("ELF\n");
+		elf_parser(fp);
+	}
+	
 	
 	printf("Size: ");
 	
