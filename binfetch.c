@@ -8,8 +8,8 @@
 
 
 #include "elf_arch.h"
+#include "elf_osabi.h"
 #include "mach_arch.h"
-#include "osabi.h"
 
 
 typedef enum ansi_color
