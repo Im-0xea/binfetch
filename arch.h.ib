@@ -1,3 +1,5 @@
+#include "pair.h"
+
 const struct pair arches[] =
 		.key = 0x00
 		.str = "No specific instruction set"
@@ -208,6 +210,3 @@ const struct pair arches[] =
 	
 		.key = 0xF7
 		.str = "Berkeley Packet Filter"
-	
-		.key = 0x101
-		.str = "WDC 65C816"

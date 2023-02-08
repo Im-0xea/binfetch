@@ -3,7 +3,10 @@
 #include <unistd.h>
 #include <libgen.h>
 
-const size_t max_tok = 128;
+
+#include "arch.h"
+#include "osabi.h"
+
 
 typedef enum ansi_color
 {
@@ -18,7 +21,10 @@ typedef enum ansi_color
 }
 color;
 
+
 const color col = magenta;
+const size_t max_tok = 128;
+
 
 static void set_color(const color c)
 {
@@ -30,7 +36,12 @@ static void print_label(const char * label)
 	set_color(col);
 	printf("%s: ", label);
 	set_color(blank);
-	
+}
+
+static void advance(byte * tok, const size_t n, FILE * fp)
+{
+	bzero(tok, max_tok);
+	fread(tok, n, 1, fp);
 }
 
 int main(int argc, char **argv)
@@ -59,11 +70,9 @@ int main(int argc, char **argv)
 	puts(basename(argv[1]));
 	
 	
-	unsigned char tok[max_tok];
+	byte tok[max_tok];
 	
-	bzero(tok, max_tok);
-	
-	fread(tok, 4, 1, fp);
+	advance(tok, 4, fp);
 	
 	set_color(col);
 	
@@ -76,9 +85,7 @@ int main(int argc, char **argv)
 		printf("ELF\n");
 	}
 	
-	bzero(tok, max_tok);
-	
-	fread(tok, 4, 1, fp);
+	advance(tok, 4, fp);
 	
 	int bits = 0 ;// 32 or 64
 	
@@ -135,73 +142,25 @@ int main(int argc, char **argv)
 	
 	set_color(blank);
 	
-	switch (tok[3])
+	size_t osabic = 0;
+	while(osabic < sizeof osabis / sizeof(pr))
 	{
-		case 0x00:
-			printf("System V\n");
+		if (osabis[osabic].key == tok[3])
+		{
+			puts(osabis[osabic].str);
 			break;
-		case 0x01:
-			printf("HPUX\n");
-			break;
-		case 0x02:
-			printf("NetBSD\n");
-			break;
-		case 0x03:
-			printf("Linux\n");
-			break;
-		case 0x04:
-			printf("Hurd\n");
-			break;
-		case 0x06:
-			printf("Solaris\n");
-			break;
-		case 0x07:
-			printf("AIX\n");
-			break;
-		case 0x08:
-			printf("IRIX\n");
-			break;
-		case 0x09:
-			printf("FreeBSD\n");
-			break;
-		case 0x0a:
-			printf("Tru64\n");
-			break;
-		case 0x0b:
-			printf("Novell Modesto\n");
-			break;
-		case 0x0c:
-			printf("OpenBSD\n");
-			break;
-		case 0x0d:
-			printf("OpenVMS\n");
-			break;
-		case 0x0e:
-			printf("NonStop Kernel\n");
-			break;
-		case 0x0f:
-			printf("AROS\n");
-			break;
-		case 0x10:
-			printf("FenixOS\n");
-			break;
-		case 0x11:
-			printf("Nuxi\n");
-			break;
-		case 0x12:
-			printf("OpenVOS\n");
-			break;
+		}
+		else if(++osabic == sizeof osabis / sizeof(pr))
+		{
+			printf("unknown abi %d", tok[3]);
+		}
 	}
 	
-	bzero(tok, max_tok);
-	
-	fread(tok, bits == 1 ? 4 : 8, 1, fp);
+	advance(tok, bits == 1 ? 4 : 8, fp);
 	
 	// do nothing
 	
-	bzero(tok, max_tok);
-	
-	fread(tok, 2, 1, fp);
+	advance(tok, 2, fp);
 	
 	set_color(col);
 	
@@ -224,9 +183,7 @@ int main(int argc, char **argv)
 			printf("unknown object type %d\n", tok[0]);
 	}
 	
-	bzero(tok, max_tok);
-	
-	fread(tok, 2, 1, fp);
+	advance(tok, 2, fp);
 	
 	set_color(col);
 	
@@ -234,27 +191,25 @@ int main(int argc, char **argv)
 	
 	set_color(blank);
 	
-	switch (tok[0])
+	size_t archc = 0;
+	while(archc < sizeof arches / sizeof(pr))
 	{
-		case 0x03:
-			printf("x86\n");
+		if (arches[archc].key == tok[0])
+		{
+			puts(arches[archc].str);
 			break;
-		case 0xb7:
-			printf("armv8\n");
-			break;
-		default:
-			printf("unknown arch %d\n", tok[1]);
+		}
+		else if(++archc == sizeof arches / sizeof(pr))
+		{
+			printf("unknown arch %d", tok[0]);
+		}
 	}
 	
-	bzero(tok, max_tok);
-	
-	fread(tok, 4, 1, fp);
+	advance(tok, 4, fp);
 	
 	// do nothing
 	
-	bzero(tok, max_tok);
-	
-	fread(tok, bits == 1 ? 4 : 8, 1, fp);
+	advance(tok, bits == 1 ? 4 : 8, fp);
 	
 	set_color(col);
 	
