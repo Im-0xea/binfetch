@@ -1,10 +1,18 @@
 #pragma once
 
 typedef unsigned char byte;
+typedef unsigned long fbyte;
 
-typedef struct pair
+typedef struct small_pair
 {
 	byte key;
 	char str[64];
 }
-pr;
+spr;
+
+typedef struct big_pair
+{
+	fbyte key;
+	char str[64];
+}
+bpr;

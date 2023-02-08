@@ -7,7 +7,8 @@
 #include <sys/stat.h>
 
 
-#include "arch.h"
+#include "elf_arch.h"
+#include "mach_arch.h"
 #include "osabi.h"
 
 
@@ -51,7 +52,7 @@ static void advance(void * tok, const size_t n, FILE * fp)
 	}
 }
 
-static void pair_parser(const byte val, const pr * prs, const size_t size, const char * type)
+static void spair_parser(const byte val, const spr * prs, const size_t size, const char * type)
 {
 	size_t c = 0;
 	while(c < size)
@@ -63,7 +64,24 @@ static void pair_parser(const byte val, const pr * prs, const size_t size, const
 		}
 		else if(++c == size)
 		{
-			printf("unknown %s %d", type, val);
+			printf("unknown %s (%d)\n", type, val);
+		}
+	}
+}
+
+static void bpair_parser(const byte val, const bpr * prs, const size_t size, const char * type)
+{
+	size_t c = 0;
+	while(c < size)
+	{
+		if (prs[c].key == val)
+		{
+			printf("%s\n", prs[c].str);
+			break;
+		}
+		else if(++c == size)
+		{
+			printf("unknown %s (%lu)\n", type, val);
 		}
 	}
 }
@@ -117,7 +135,7 @@ static void elf_parser(FILE * fp)
 	
 	print_label("OS ABI");
 	
-	pair_parser(tok[3], osabis, sizeof osabis / sizeof(pr), "abi");
+	spair_parser(tok[3], osabis, sizeof osabis / sizeof(spr), "abi");
 	
 	if (tok[4] != 0)
 	{
@@ -153,7 +171,7 @@ static void elf_parser(FILE * fp)
 	
 	print_label("Arch");
 	
-	pair_parser(tok[0], arches, sizeof arches / sizeof(pr), "arch");
+	spair_parser(tok[0], elf_arches, sizeof elf_arches / sizeof(spr), "arch");
 	
 	advance(tok, 4, fp);
 	
@@ -200,6 +218,15 @@ static void elf_parser(FILE * fp)
 
 static void mach_parser(FILE * fp)
 {
+	fbyte tok = 0;
+	
+	advance(&tok, 4, fp);
+	
+	print_label("Cpu Type");
+	
+	bpair_parser(tok, mach_arches, sizeof mach_arches / sizeof(bpr), "cpu type");
+	
+	
 	return;
 }
 

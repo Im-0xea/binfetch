@@ -1,6 +1,6 @@
 #include "pair.h"
 
-const struct pair osabis[] =
+const spr osabis[] =
 		.key = 0x00
 		.str = "System V"
 	

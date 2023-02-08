@@ -4,7 +4,8 @@ CFLAGS= -Os
 
 all:
 	ib pair.h.ib
-	ib arch.h.ib
+	ib elf_arch.h.ib
+	ib mach_arch.h.ib
 	ib osabi.h.ib
 	ib -in binfetch.c.ib --flags "${CFLAGS}"
 
