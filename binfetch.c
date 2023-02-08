@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <sys/stat.h>
 
 
 #include "arch.h"
@@ -231,36 +232,19 @@ int main(int argc, char **argv)
 		printf("ELF\n");
 		elf_parser(fp);
 	}
-	
+	else 
+	{
+		printf("unknown\n");
+	}
 	
 	printf("Size: ");
 	
 	set_color(blank);
 	
-	char exec_path[] = "du -h ";
-	strcat(exec_path, argv[1]);
-	FILE *p = popen(exec_path, "r");
-	
-	if (!p)
-	{
-		printf("couldn't find 'du'\n");
-	}
-	
-	char buf[64];
-	fgets(buf, 64, p);
-	
-	char *save = NULL;
-	char *size  = strtok_r(buf, " \t\n", &save);
-	
-	
-	if (pclose(p))
-	{
-		printf("du failed\n");
-	}
-	else
-	{
-		puts(size);
-	}
+	struct stat st;
+	stat(argv[1], &st);
+	size_t sz = st.st_size;
+	printf("%lu\n", sz);
 	
 	fclose(fp);
 	
