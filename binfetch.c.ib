@@ -3,7 +3,10 @@
 #include <unistd.h>
 #include <libgen.h>
 
-const size_t max_tok = 128
+
+#include "arches.h"
+#include "osabi.h"
+
 
 typedef enum ansi_color
 	blank   = 0
@@ -16,7 +19,10 @@ typedef enum ansi_color
 	white   = 37
 color
 
+
 const color col = magenta
+const size_t max_tok = 128
+
 
 static void set_color(const color c)
 	printf("\033[%dm", c)
@@ -25,7 +31,6 @@ static void print_label(const char * label)
 	set_color(col)
 	printf("%s: ", label)
 	set_color(blank)
-	
 
 int main(int argc, char **argv)
 	
@@ -48,7 +53,7 @@ int main(int argc, char **argv)
 	puts(basename(argv[1]))
 	
 	
-	char tok[max_tok]
+	unsigned char tok[max_tok]
 	
 	bzero(tok, max_tok)
 	
@@ -112,7 +117,7 @@ int main(int argc, char **argv)
 	
 	switch (tok[3])
 		case 0x00:
-			printf("System V\n")
+			printf("System V\n");
 			break
 		case 0x01:
 			printf("HPUX\n")
@@ -205,15 +210,13 @@ int main(int argc, char **argv)
 	
 	set_color(blank)
 	
-	switch (tok[0])
-		case 0x03:
-			printf("x86\n")
+	size_t archc = 0
+	while(archc < sizeof arches / sizeof pair)
+		if (arches[archc].key == tok[0])
+			puts(arches[archc].str)
 			break
-		case 0xb7:
-			printf("armv8\n")
-			break
-		default:
-			printf("unknown arch %d\n", tok[1])
+		else if(++archc == sizeof arches / sizeof pair)
+			printf("unknown arch %d", tok[0])
 	
 	bzero(tok, max_tok)
 	
