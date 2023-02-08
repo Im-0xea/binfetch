@@ -41,7 +41,7 @@ static void print_label(const char * label)
 	set_color(blank);
 }
 
-static void advance(byte * tok, const size_t n, FILE * fp)
+static void advance(void * tok, const size_t n, FILE * fp)
 {
 	bzero(tok, max_tok);
 	if (!fread(tok, n, 1, fp))
@@ -196,8 +196,11 @@ static void elf_parser(FILE * fp)
 		
 		printf("%s\n", out);
 	}
-	
-	
+}
+
+static void mach_parser(FILE * fp)
+{
+	return;
 }
 
 int main(int argc, char **argv)
@@ -226,20 +229,25 @@ int main(int argc, char **argv)
 	puts(basename(argv[1]));
 	
 	
-	byte tok[max_tok];
+	unsigned long tok = 0;
 	
-	advance(tok, 4, fp);
+	advance(&tok, 4, fp);
 	
 	print_label("Header");
 	
-	if (!strcmp(tok + 1, "ELF"))
+	if (tok == 0x464c457f)
 	{
 		printf("ELF\n");
 		elf_parser(fp);
 	}
-	else 
+	else if (tok == 0xfeedfacf)
 	{
-		printf("unknown\n");
+		printf("MACH-O\n");
+		mach_parser(fp);
+	}
+	else
+	{
+		printf("unknown %lx\n", tok);
 	}
 	
 	print_label("Size");
