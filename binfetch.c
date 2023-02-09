@@ -360,11 +360,18 @@ int main(int argc, char **argv)
 		int cond = tok >> 24 != 0xfe;
 		mach_parser(fp, cond, !cond ? tok << 24 == 0xce ? 0 : 1 : tok >> 24 == 0xce ? 0 : 1);
 	}
+	else if (tok == 0xfa405a4d)
+	{
+		printf("Compressed Binary\n");
+	}
+	else if (tok == 0x0a324655)
+	{
+		printf("uf2\n");
+	}
 	else
 	{
 		printf("unknown %lx\n", tok);
 	}
-	
 	print_label("Size");
 	
 	struct stat st;
