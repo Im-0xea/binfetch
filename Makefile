@@ -3,11 +3,10 @@ PREFIX =/usr
 CFLAGS = -Os -Wall
 LDFLAGS = -lssl -lcrypto
 
+HEADERS = *.h.ib
+
 all:
-	ib pair.h.ib
-	ib elf_arch.h.ib
-	ib mach_arch.h.ib
-	ib elf_osabi.h.ib
+	ib ${HEADERS}
 	ib -in binfetch.c.ib --flags "${CFLAGS} ${LDFLAGS}"
 
 bootstrap:
