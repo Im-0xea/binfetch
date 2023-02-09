@@ -200,7 +200,7 @@ const spr elf_arches[] =
 		.str = "MCST Elbrus e2k"
 	
 		.key = 0xB7
-		.str = "Arm 64-bits (Armv8/AArch64)"
+		.str = "Armv8"
 	
 		.key = 0xDC
 		.str = "Zilog Z80"

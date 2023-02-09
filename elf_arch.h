@@ -334,7 +334,7 @@ const spr elf_arches[] =
 	
 	{
 		.key = 0xB7,
-		.str = "Arm 64-bits (Armv8/AArch64)"
+		.str = "Armv8"
 	},
 	
 	{
