@@ -11,10 +11,6 @@ static void sha512_art(FILE * fp)
 	}
 	
 	SHA512_Final(data, &ctx);
-	for (i = 0; i < 64; i++)
-	{
-		bzero(ascii_art[i], 64);
-	}
 	i = 0;
 	for(i = 0; i < 64; i++)
 	{
@@ -43,10 +39,6 @@ static void sha256_art(FILE * fp)
 	}
 	
 	SHA256_Final(data, &ctx);
-	for (i = 0; i < 64; i++)
-	{
-		bzero(ascii_art[i], 64);
-	}
 	i = 0;
 	for(i = 0; i < 32; i++)
 	{

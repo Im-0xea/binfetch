@@ -49,11 +49,11 @@ static void set_color(const color c)
 
 static void print_label(const char * label)
 {
-	if (ascii_art[current_line][0] != NULL)
+	if (ascii_art[current_line][0] != '\0')
 	{
 		printf("%s  ", ascii_art[current_line++]);
 	}
-	else
+	else if (current_line != 0)
 	{
 		printf("%*s  ", max_line, " ");
 	}
@@ -84,7 +84,7 @@ static void spair_parser(const byte val, const spr * prs, const size_t size, con
 		}
 		else if(++c == size)
 		{
-			printf("unknown %s (%d)\n", type, val);
+			printf("unknown %s (0x%x)\n", type, val);
 		}
 	}
 }
@@ -101,190 +101,14 @@ static void bpair_parser(const fbyte val, const bpr * prs, const size_t size, co
 		}
 		else if(++c == size)
 		{
-			printf("unknown %s (0x%lx)\n", type, val);
+			printf("unknown %s (0x%x)\n", type, val);
 		}
 	}
 }
 
-static void elf_parser(FILE * fp)
-{
-	byte tok[max_tok];
-	
-	advance(tok, 5, fp);
-	
-	int bits = 0 ;// 32 or 64
-	
-	print_label("Class");
-	
-	if (tok[0] == 0x01)	
-	{
-		bits = 1;
-		printf("32 bit\n");
-	}
-	else if (tok[0] == 0x02)
-	{
-		bits = 2;
-		printf("64 bit\n");
-	}
-	else
-	{
-		printf("unknown");
-	}
-	
-	print_label("Endianness");
-	
-	if (tok[1] == 0x01)
-	{
-		printf("little endian\n");
-	}
-	else if (tok[1] == 0x02)
-	{
-		printf("big endian\n");
-	}
-	else
-	{
-		printf("unknown endian\n");
-	}
-	
-	print_label("Version");
-	
-	if (tok[2] == 0x01)
-	{
-		printf("ELFv1\n");
-	}
-	else if (tok[2] == 0x00)
-	{
-		printf("noncompliant\n");
-	}
-	
-	print_label("OS ABI");
-	
-	spair_parser(tok[3], osabis, sizeof osabis / sizeof(spr), "abi");
-	
-	if (tok[4] != 0)
-	{
-		print_label("ABI Version");
-		
-		printf("%d\n", tok[4]);
-	}
-	
-	while (fread(tok, 1, 1, fp) && tok[0] == 0);
-	fseek(fp, -1, SEEK_CUR);
-	// do nothing
-	
-	advance(tok, 2, fp);
-	
-	print_label("Type");
-	
-	spair_parser(tok[0], elf_types, sizeof elf_types / sizeof(spr), "type");
-	
-	advance(tok, 2, fp);
-	
-	print_label("Arch");
-	
-	spair_parser(tok[0], elf_arches, sizeof elf_arches / sizeof(spr), "arch");
-	
-	advance(tok, 4, fp);
-	
-	// do nothing
-	
-	advance(tok, bits == 1 ? 4 : 8, fp);
-	
-	print_label("Entry");
-	
-	printf("0x");
-	
-	{
-		char out[128] = "";
-		signed long b = bits == 1 ? 4 : 8;
-		while (--b >= 0)
-		{
-			if (!tok[b]) continue;
-			char bit[3];
-			sprintf(bit, "%02x", tok[b]);
-			strcat(out,bit);
-		}
-		
-		printf("%s\n", out);
-	}
-	
-	advance(tok, bits == 1 ? 4 : 8, fp);
-	print_label("Table");
-	printf("0x");
-	
-	{
-		char out[128] = "";
-		signed long b = bits == 1 ? 4 : 8;
-		while (--b >= 0)
-		{
-			if (!tok[b]) continue;
-			char bit[3];
-			sprintf(bit, "%02x", tok[b]);
-			strcat(out,bit);
-		}
-		
-		printf("%s\n", out);
-	}
-}
-
-static void mach_parser(FILE * fp, int bit, int end)
-{
-	fbyte tok = 0;
-	int bits = 0 ;// 32 or 64
-	
-	advance(&tok, 4, fp);
-	
-	print_label("Arch");
-	
-	bpair_parser(tok, mach_arches, sizeof mach_arches / sizeof(bpr), "cpu type");
-	
-	fbyte cls = (tok >> 24);
-	print_label("Class");
-	
-	if (cls == 0x00)	
-	{
-		bits = 1;
-		printf("32 bit\n");
-	}
-	else if (cls == 0x1)
-	{
-		bits = 2;
-		printf("64 bit\n");
-	}
-	else if (cls == 0x2)
-	{
-		bits = 2;
-		printf("LP 32\n");
-	}
-	else
-	{
-		printf("unknown (%lx)", cls);
-	}
-	
-	print_label("Endianness");
-	if (end == 0)
-	{
-		printf("little endian\n");
-	}
-	else if (end == 1)
-	{
-		printf("big endian\n");
-	}
-	else
-	{
-		printf("unknown endian\n");
-	}
-	
-	advance(&tok, 4, fp);
-	advance(&tok, 4, fp);
-	
-	print_label("Type");
-	
-	spair_parser(tok, mach_types, sizeof mach_types / sizeof(spr), "type");
-	
-	
-	return;
-}
+#include"elf_parser.h"
+#include"mach_parser.h"
+#include"pe_parser.h"
 
 int main(int argc, char **argv)
 {
@@ -299,6 +123,10 @@ int main(int argc, char **argv)
 	
 	FILE * fp = fopen(argv[1], "rb");
 	
+	for (int i = 0; i < 64; i++)
+	{
+		bzero(ascii_art[i], 64);
+	}
 	sha512_art(fp);
 	
 	if (!fp)
@@ -335,13 +163,18 @@ int main(int argc, char **argv)
 	{
 		printf("Compressed Binary\n");
 	}
+	else if ((tok & 0x0000ffff) == 0x5a4d)
+	{
+		printf("PE\n");
+		pe_parser(fp);
+	}
 	else if (tok == 0x0a324655)
 	{
 		printf("uf2\n");
 	}
 	else
 	{
-		printf("unknown %lx\n", tok);
+		printf("unknown %x\n", tok << 16);
 	}
 	print_label("Size");
 	
@@ -352,7 +185,7 @@ int main(int argc, char **argv)
 	
 	for (; current_line < 64; current_line++)
 	{
-		if (ascii_art[current_line][0] != NULL)
+		if (ascii_art[current_line][0] != '\0')
 		{
 			printf("%s\n", ascii_art[current_line]);
 		}
