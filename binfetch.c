@@ -8,9 +8,13 @@
 
 #include <openssl/sha.h>
 
+
 #include "elf_arch.h"
+#include "elf_type.h"
 #include "elf_osabi.h"
+
 #include "mach_arch.h"
+#include "mach_type.h"
 
 
 typedef enum ansi_color
@@ -31,8 +35,12 @@ const color col = magenta;
 const size_t max_tok = 128;
 
 char ascii_art[64][64];
-size_t current_line = 0;
-size_t max_line = 0;
+int current_line = 0;
+int max_line = 0;
+
+
+#include "crypto.h"
+
 
 static void set_color(const color c)
 {
@@ -96,40 +104,6 @@ static void bpair_parser(const fbyte val, const bpr * prs, const size_t size, co
 			printf("unknown %s (0x%lx)\n", type, val);
 		}
 	}
-}
-
-static void sha512_art(FILE * fp)
-{
-	int i;
-	SHA512_CTX ctx;
-	int bytes;
-	unsigned char buf[1024];
-	unsigned char data[64];
-	
-	SHA512_Init (&ctx);
-	while ((bytes = fread (buf, 1, 1024, fp)) != 0)
-	{
-		SHA512_Update (&ctx, buf, bytes);
-	}
-	
-	SHA512_Final(data, &ctx);
-	for (i = 0; i < 64; i++)
-	{
-		bzero(ascii_art[i], 64);
-	}
-	i = 0;
-	for(i = 0; i < 64; i++)
-	{
-		sprintf(&ascii_art[i / 8][i % 8 * 2],"%02x", data[i]);
-		int len = strlen(ascii_art[i / 8]);
-		if (len > max_line)
-		{
-			max_line = len;
-		}
-	}
-	i = 0;
-	
-	rewind(fp);
 }
 
 static void elf_parser(FILE * fp)
@@ -202,20 +176,7 @@ static void elf_parser(FILE * fp)
 	
 	print_label("Type");
 	
-	switch (tok[0])
-	{
-		case 0x01:
-			printf("Object\n");
-			break;
-		case 0x02:
-			printf("Static\n");
-			break;
-		case 0x03:
-			printf("Shared\n");
-			break;
-		default:
-			printf("Unknown object type %d\n", tok[0]);
-	}
+	spair_parser(tok[0], elf_types, sizeof elf_types / sizeof(spr), "type");
 	
 	advance(tok, 2, fp);
 	
@@ -319,45 +280,7 @@ static void mach_parser(FILE * fp, int bit, int end)
 	
 	print_label("Type");
 	
-	switch (tok)
-	{
-		case 0x00:
-		case 0x01:
-			printf("Object\n");
-			break;
-		case 0x02:
-			printf("Static\n");
-			break;
-		case 0x03:
-			printf("FVM Library\n");
-			break;
-		case 0x04:
-			printf("Core Dump\n");
-			break;
-		case 0x05:
-			printf("Preload\n");
-			break;
-		case 0x06:
-			printf("Dynamic Library\n");
-			break;
-		case 0x07:
-			printf("Dynamic Linker\n");
-			break;
-		case 0x08:
-			printf("Bundle\n");
-			break;
-		case 0x09:
-			printf("Dynamic Library Stub\n");
-			break;
-		case 0x0a:
-			printf("Debug Symbols\n");
-			break;
-		case 0x0b:
-			printf("Kernel Extension Bundle\n");
-			break;
-		default:
-			printf("Unknown object type %lx\n", tok);
-	}
+	spair_parser(tok, mach_types, sizeof mach_types / sizeof(spr), "type");
 	
 	
 	return;
@@ -434,6 +357,8 @@ int main(int argc, char **argv)
 			printf("%s\n", ascii_art[current_line]);
 		}
 	}
+	
+	printf("\n");
 	
 	fclose(fp);
 	return 0;
