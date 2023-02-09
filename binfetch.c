@@ -6,6 +6,7 @@
 
 #include <sys/stat.h>
 
+#include <openssl/sha.h>
 
 #include "elf_arch.h"
 #include "elf_osabi.h"
@@ -29,6 +30,9 @@ color;
 const color col = magenta;
 const size_t max_tok = 128;
 
+char ascii_art[64][64];
+size_t current_line = 0;
+size_t max_line = 0;
 
 static void set_color(const color c)
 {
@@ -37,6 +41,14 @@ static void set_color(const color c)
 
 static void print_label(const char * label)
 {
+	if (ascii_art[current_line][0] != NULL)
+	{
+		printf("%s  ", ascii_art[current_line++]);
+	}
+	else
+	{
+		printf("%*s  ", max_line, " ");
+	}
 	set_color(col);
 	printf("%s: ", label);
 	set_color(blank);
@@ -84,6 +96,40 @@ static void bpair_parser(const fbyte val, const bpr * prs, const size_t size, co
 			printf("unknown %s (0x%lx)\n", type, val);
 		}
 	}
+}
+
+static void sha512_art(FILE * fp)
+{
+	int i;
+	SHA512_CTX ctx;
+	int bytes;
+	unsigned char buf[1024];
+	unsigned char data[64];
+	
+	SHA512_Init (&ctx);
+	while ((bytes = fread (buf, 1, 1024, fp)) != 0)
+	{
+		SHA512_Update (&ctx, buf, bytes);
+	}
+	
+	SHA512_Final(data, &ctx);
+	for (i = 0; i < 64; i++)
+	{
+		bzero(ascii_art[i], 64);
+	}
+	i = 0;
+	for(i = 0; i < 64; i++)
+	{
+		sprintf(&ascii_art[i / 8][i % 8 * 2],"%02x", data[i]);
+		int len = strlen(ascii_art[i / 8]);
+		if (len > max_line)
+		{
+			max_line = len;
+		}
+	}
+	i = 0;
+	
+	rewind(fp);
 }
 
 static void elf_parser(FILE * fp)
@@ -330,6 +376,8 @@ int main(int argc, char **argv)
 	
 	FILE * fp = fopen(argv[1], "rb");
 	
+	sha512_art(fp);
+	
 	if (!fp)
 	{
 		set_color(red);
@@ -379,7 +427,14 @@ int main(int argc, char **argv)
 	size_t sz = st.st_size;
 	printf("%lu\n", sz);
 	
-	fclose(fp);
+	for (; current_line < 64; current_line++)
+	{
+		if (ascii_art[current_line][0] != NULL)
+		{
+			printf("%s\n", ascii_art[current_line]);
+		}
+	}
 	
+	fclose(fp);
 	return 0;
 }
