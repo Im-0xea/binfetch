@@ -8,13 +8,7 @@
 
 #include <openssl/sha.h>
 
-
-#include "elf_arch.h"
-#include "elf_type.h"
-#include "elf_osabi.h"
-
-#include "mach_arch.h"
-#include "mach_type.h"
+#include "pair.h"
 
 
 typedef enum ansi_color

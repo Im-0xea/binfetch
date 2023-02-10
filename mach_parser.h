@@ -1,3 +1,6 @@
+#include "mach_arch.h"
+#include "mach_type.h"
+
 static void mach_parser(FILE * fp, int bit, int end)
 {
 	fbyte tok = 0;

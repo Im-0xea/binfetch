@@ -1,5 +1,3 @@
-#include "pair.h"
-
 const spr elf_arches[] =
 		.key = 0x00
 		.str = "Unknown instruction set"

@@ -1,5 +1,3 @@
-#include "pair.h"
-
 const spr osabis[] =
 		.key = 0x00
 		.str = "System V"

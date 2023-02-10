@@ -1,3 +1,7 @@
+#include "elf_arch.h"
+#include "elf_type.h"
+#include "elf_osabi.h"
+
 static void elf_parser(FILE * fp)
 	byte tok[max_tok]
 	
