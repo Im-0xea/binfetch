@@ -1,5 +1,3 @@
-#include "pair.h"
-
 const spr osabis[] =
 {
 	{
