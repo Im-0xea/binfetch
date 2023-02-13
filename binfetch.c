@@ -6,8 +6,6 @@
 
 #include <sys/stat.h>
 
-#include <openssl/sha.h>
-
 #include "pair.h"
 
 
@@ -121,7 +119,7 @@ int main(int argc, char **argv)
 	{
 		bzero(ascii_art[i], 64);
 	}
-	sha512_art(fp);
+	checksum_art(fp, EVP_sha512());
 	
 	if (!fp)
 	{
