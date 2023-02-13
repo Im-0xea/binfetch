@@ -16,17 +16,15 @@ const size_t max_tok = 1018;
 char ascii_art[128][128];
 tcolor ascii_cols[128] =
 {
-	cyan,
-	magenta,
+	yellow,
 	white,
-	magenta,
-	cyan
+	magenta	
 };
 
 int current_line = 0;
 int max_width = 0;
 int max_height = 0;
-int max_colors = 5;
+int max_colors = 3;
 
 #include "crypto.h"
 

@@ -15,16 +15,23 @@ const tcolor white =
 
 const tcolor cyan =
 {
-	91,
-	206,
-	250
+	109,
+	209,
+	255
 };
 
 const tcolor magenta =
 {
-	245,
-	169,
-	184
+	156,
+	89,
+	209
+};
+
+const tcolor light_magenta =
+{
+	234,
+	150,
+	170
 };
 
 const tcolor red =
@@ -32,4 +39,18 @@ const tcolor red =
 	255,
 	0,
 	0
+};
+
+const tcolor grey =
+{
+	170,
+	170,
+	170
+};
+
+const tcolor yellow =
+{
+	252,
+	244,
+	52
 };
