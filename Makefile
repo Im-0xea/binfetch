@@ -1,6 +1,6 @@
 PREFIX =/usr
 
-CFLAGS = -Os -Wall
+CFLAGS = -Os -g -Wall
 LDFLAGS = -lssl -lcrypto
 
 HEADERS = *.h.ib
