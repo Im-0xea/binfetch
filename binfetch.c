@@ -8,55 +8,57 @@
 
 #include "pair.h"
 
+#include "color.h"
 
-typedef enum ansi_color
+const tcolor col = magenta;
+const size_t max_tok = 1018;
+
+char ascii_art[128][128];
+tcolor ascii_cols[128] =
 {
-	blank   = 0,
-	red     = 31,
-	green   = 32,
-	yellow  = 33,
-	blue    = 34,
-	magenta = 35,
-	cyan    = 36,
-	white   = 37
-}
-color;
+	cyan,
+	magenta,
+	white,
+	magenta,
+	cyan
+};
 
-
-const color col = magenta;
-const size_t max_tok = 128;
-
-char ascii_art[64][64];
 int current_line = 0;
-int max_line = 0;
-
+int max_width = 0;
+int max_height = 0;
+int max_colors = 5;
 
 #include "crypto.h"
 
-
-static void set_color(const color c)
+static void set_color(const tcolor c)
 {
-	printf("\033[%dm", c);
+	printf("\033[38;2;%d;%d;%dm", c.r, c.g, c.b);
+}
+
+static void set_blank(void)
+{
+	printf("\033[0m");
 }
 
 static void print_label(const char * label)
 {
 	if (ascii_art[current_line][0] != '\0')
 	{
+		set_color(ascii_cols[(int) ((float) current_line / (float) max_height * (float) max_colors)]);
 		printf("%s  ", ascii_art[current_line++]);
+		set_blank();
 	}
 	else if (current_line != 0)
 	{
-		printf("%*s  ", max_line, " ");
+		printf("%*s  ", max_width, " ");
 	}
 	set_color(col);
 	printf("%s: ", label);
-	set_color(blank);
+	set_blank();
 }
 
 static void advance(void * tok, const size_t n, FILE * fp)
 {
-	bzero(tok, max_tok);
 	if (!fread(tok, n, 1, fp))
 	{
 		printf("error reading from file\n");
@@ -109,7 +111,7 @@ int main(int argc, char **argv)
 	{
 		set_color(red);
 		printf("you did not provide a binary\n");
-		set_color(blank);
+		set_blank();
 		return 1;
 	}
 	
@@ -125,7 +127,7 @@ int main(int argc, char **argv)
 	{
 		set_color(red);
 		printf("failed to open binary\n");
-		set_color(blank);
+		set_blank();
 		return 1;
 	}
 	
@@ -179,7 +181,9 @@ int main(int argc, char **argv)
 	{
 		if (ascii_art[current_line][0] != '\0')
 		{
+			set_color(ascii_cols[(int) ((float) (current_line) / (float) max_height * (float) max_colors)]);
 			printf("%s\n", ascii_art[current_line]);
+			set_blank();
 		}
 	}
 	

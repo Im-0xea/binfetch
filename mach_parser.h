@@ -4,7 +4,6 @@
 static void mach_parser(FILE * fp, int bit, int end)
 {
 	fbyte tok = 0;
-	int bits = 0 ;// 32 or 64
 	
 	advance(&tok, 4, fp);
 	
@@ -17,17 +16,14 @@ static void mach_parser(FILE * fp, int bit, int end)
 	
 	if (cls == 0x00)	
 	{
-		bits = 1;
 		printf("32 bit\n");
 	}
 	else if (cls == 0x1)
 	{
-		bits = 2;
 		printf("64 bit\n");
 	}
 	else if (cls == 0x2)
 	{
-		bits = 2;
 		printf("LP 32\n");
 	}
 	else
