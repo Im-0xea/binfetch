@@ -1,4 +1,5 @@
 PREFIX =/usr
+CONFIG =/home/nik/.config/binfetch
 
 CFLAGS = -Os -Wall
 LDFLAGS = -lssl -lcrypto
@@ -13,4 +14,6 @@ bootstrap:
 	gcc binfetch.c -o binfetch ${CFLAGS} ${LDFLAGS}
 
 install:
+	mkdir -p ${CONFIG}
+	cp cfg/binfetch.cfg ${CONFIG}
 	cp binfetch ${PREFIX}/bin/binfetch
