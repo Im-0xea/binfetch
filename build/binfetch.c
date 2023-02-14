@@ -129,7 +129,7 @@ static int fetch(char * path)
 	}
 	else
 	{
-		sprintf(bs.header, "unknown %x\n", tok << 16);
+		sprintf(bs.header, "unknown %x", tok << 16);
 	}
 	add_label("Header", bs.header);
 	
