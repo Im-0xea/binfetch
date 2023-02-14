@@ -86,6 +86,16 @@ static void address_parser(char * out, byte *tok, int bits)
 		sprintf(bit, "%02x", tok[b])
 		strcat(out, bit)
 
+static void get_size(char * out, size_t in)
+	if (in < 1024)
+		sprintf(out, "%ld b", in)
+	else if (in < 1048576)
+		sprintf(out, "%ld kb", in / 1024)
+	else if (in < 1073741824)
+		sprintf(out, "%ld mb", in / 1048576)
+	else
+		sprintf(out, "%ld gb", in / 1073741824)
+
 #include"elf_parser.h"
 #include"mach_parser.h"
 #include"pe_parser.h"
@@ -136,8 +146,7 @@ static int fetch(char * path)
 	
 	struct stat st
 	stat(path, &st)
-	size_t sz = st.st_size
-	sprintf(bs.size, "0x%lx", sz)
+	get_size(bs.size, st.st_size)
 	
 	print_label("Name")
 	puts(bs.name)
