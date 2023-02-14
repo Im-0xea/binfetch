@@ -88,7 +88,7 @@ static void address_parser(char * out, byte *tok, int bits)
 
 static void get_size(char * out, size_t in)
 	if (in < 1024)
-		sprintf(out, "%.1f b", (double) in)
+		sprintf(out, "%ld b", in)
 	else if (in < 1048576)
 		sprintf(out, "%.1f kb", (double) in / 1024)
 	else if (in < 1073741824)
