@@ -2,66 +2,74 @@
 #include "elf_type.h"
 #include "elf_osabi.h"
 
-static void elf_parser(FILE * fp)
+typedef struct elf_info
 {
+	char version [128];
+	char osabi   [128];
+	char osabi_v [128];
+	char entry   [128];
+	char table   [128];
+}
+elf;
+
+static void elf_parser(FILE * fp, base * bs)
+{
+	elf as;
+	
 	byte tok[max_tok];
 	
 	advance(tok, 5, fp);
 	
 	int bits = 0 ;// 32 or 64
 	
-	print_label("Class");
-	
 	if (tok[0] == 0x01)	
 	{
 		bits = 1;
-		printf("32 bit\n");
+		strcpy(bs->class, "32 bit");
 	}
 	else if (tok[0] == 0x02)
 	{
 		bits = 2;
-		printf("64 bit\n");
+		strcpy(bs->class, "64 bit");
 	}
 	else
 	{
-		printf("unknown");
+		strcpy(bs->class, "unknown");
 	}
-	
-	print_label("Endianness");
 	
 	if (tok[1] == 0x01)
 	{
-		printf("little endian\n");
+		strcpy(bs->endian, "little endian");
 	}
 	else if (tok[1] == 0x02)
 	{
-		printf("big endian\n");
+		strcpy(bs->endian, "big endian");
 	}
 	else
 	{
-		printf("unknown endian\n");
+		strcpy(bs->endian, "unknown endian");
 	}
 	
-	print_label("Version");
 	
 	if (tok[2] == 0x01)
 	{
-		printf("ELFv1\n");
+		strcpy(as.version, "ELFv1");
 	}
 	else if (tok[2] == 0x00)
 	{
-		printf("noncompliant\n");
+		strcpy(as.version, "noncompliant");
 	}
 	
-	print_label("OS ABI");
 	
-	spair_parser(tok[3], osabis, sizeof osabis / sizeof(spr), "abi");
+	spair_parser(as.osabi, tok[3], osabis, sizeof osabis / sizeof(spr), "abi");
 	
 	if (tok[4] != 0)
 	{
-		print_label("ABI Version");
-		
-		printf("%d\n", tok[4]);
+		sprintf(as.osabi_v, "%d", tok[4]);
+	}
+	else
+	{
+		as.osabi_v[0] = '\0';
 	}
 	
 	while (fread(tok, 1, 1, fp) && tok[0] == 0);
@@ -70,15 +78,12 @@ static void elf_parser(FILE * fp)
 	
 	advance(tok, 2, fp);
 	
-	print_label("Type");
 	
-	spair_parser(tok[0], elf_types, sizeof elf_types / sizeof(spr), "type");
+	spair_parser(bs->type, tok[0], elf_types, sizeof elf_types / sizeof(spr), "type");
 	
 	advance(tok, 2, fp);
 	
-	print_label("Arch");
-	
-	spair_parser(tok[0], elf_arches, sizeof elf_arches / sizeof(spr), "arch");
+	spair_parser(bs->arch, tok[0], elf_arches, sizeof elf_arches / sizeof(spr), "arch");
 	
 	advance(tok, 4, fp);
 	
@@ -86,39 +91,23 @@ static void elf_parser(FILE * fp)
 	
 	advance(tok, bits == 1 ? 4 : 8, fp);
 	
-	print_label("Entry");
-	
-	printf("0x");
-	
-	{
-		char out[128] = "";
-		signed long b = bits == 1 ? 4 : 8;
-		while (--b >= 0)
-		{
-			if (!tok[b]) continue;
-			char bit[3];
-			sprintf(bit, "%02x", tok[b]);
-			strcat(out,bit);
-		}
-		
-		printf("%s\n", out);
-	}
+	address_parser(as.entry, tok, bits);
 	
 	advance(tok, bits == 1 ? 4 : 8, fp);
-	print_label("Table");
-	printf("0x");
 	
+	address_parser(as.table, tok, bits);
+	
+	print_label("Version");
+	puts(as.version);
+	print_label("OS ABI");
+	puts(as.osabi);
+	if (as.osabi_v[0] != '\0')
 	{
-		char out[128] = "";
-		signed long b = bits == 1 ? 4 : 8;
-		while (--b >= 0)
-		{
-			if (!tok[b]) continue;
-			char bit[3];
-			sprintf(bit, "%02x", tok[b]);
-			strcat(out,bit);
-		}
-		
-		printf("%s\n", out);
+		print_label("ABI Version");
+		puts(as.osabi_v);
 	}
+	print_label("Entry");
+	puts(as.entry);
+	print_label("table");
+	puts(as.table);
 }

@@ -1,54 +1,48 @@
 #include "mach_arch.h"
 #include "mach_type.h"
 
-static void mach_parser(FILE * fp, int bit, int end)
+static void mach_parser(FILE * fp, base * bs, int bit, int end)
 {
 	fbyte tok = 0;
 	
 	advance(&tok, 4, fp);
 	
-	print_label("Arch");
-	
-	bpair_parser(tok, mach_arches, sizeof mach_arches / sizeof(bpr), "cpu type");
+	bpair_parser(bs->arch, tok, mach_arches, sizeof mach_arches / sizeof(bpr), "cpu type");
 	
 	fbyte cls = (tok >> 24);
-	print_label("Class");
 	
 	if (cls == 0x00)	
 	{
-		printf("32 bit\n");
+		strcpy(bs->class, "32 bit");
 	}
 	else if (cls == 0x1)
 	{
-		printf("64 bit\n");
+		strcpy(bs->class, "64 bit");
 	}
 	else if (cls == 0x2)
 	{
-		printf("LP 32\n");
+		strcpy(bs->class, "LP 32 bit");
 	}
 	else
 	{
-		printf("unknown (%x)", cls);
+		sprintf(bs->class, "unknown (%x)", cls);
 	}
 	
-	print_label("Endianness");
 	if (end == 0)
 	{
-		printf("little endian\n");
+		strcpy(bs->endian, "little endian");
 	}
 	else if (end == 1)
 	{
-		printf("big endian\n");
+		strcpy(bs->endian, "big endian");
 	}
 	else
 	{
-		printf("unknown endian\n");
+		strcpy(bs->endian, "unknown endian");
 	}
 	
 	advance(&tok, 4, fp);
 	advance(&tok, 4, fp);
 	
-	print_label("Type");
-	
-	spair_parser(tok, mach_types, sizeof mach_types / sizeof(spr), "type");
+	spair_parser(bs->type, tok, mach_types, sizeof mach_types / sizeof(spr), "type");
 }
