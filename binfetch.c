@@ -21,9 +21,9 @@ tcolor ascii_cols[128] =
 	magenta	
 };
 
-int current_line = 0;
-int max_width = 0;
-int max_height = 0;
+int current_line;
+int max_width;
+int max_height;
 int max_colors = 3;
 
 #include "crypto.h"
@@ -102,36 +102,33 @@ static void bpair_parser(const fbyte val, const bpr * prs, const size_t size, co
 #include"mach_parser.h"
 #include"pe_parser.h"
 
-int main(int argc, char **argv)
+static int fetch(char * path)
 {
 	
-	if (argc < 2)
+	FILE * fp = fopen(path, "rb");
+	
+	if (!fp)
 	{
 		set_color(red);
-		printf("you did not provide a binary\n");
+		printf("failed to open %s\n", path);
 		set_blank();
 		return 1;
 	}
 	
-	FILE * fp = fopen(argv[1], "rb");
+	current_line = 0;
+	max_width = 0;
+	max_height = 0;
 	
 	for (int i = 0; i < 64; i++)
 	{
 		bzero(ascii_art[i], 64);
 	}
-	checksum_art(fp, EVP_sha512());
 	
-	if (!fp)
-	{
-		set_color(red);
-		printf("failed to open binary\n");
-		set_blank();
-		return 1;
-	}
+	checksum_art(fp, EVP_sha512());
 	
 	print_label("Name");
 	
-	puts(basename(argv[1]));
+	puts(basename(path));
 	
 	
 	fbyte tok = 0;
@@ -171,9 +168,9 @@ int main(int argc, char **argv)
 	print_label("Size");
 	
 	struct stat st;
-	stat(argv[1], &st);
+	stat(path, &st);
 	size_t sz = st.st_size;
-	printf("%lu\n", sz);
+	printf("0x%lx\n", sz);
 	
 	for (; current_line < 64; current_line++)
 	{
@@ -185,8 +182,23 @@ int main(int argc, char **argv)
 		}
 	}
 	
-	printf("\n");
+	return fclose(fp);
+}
+int main(int argc, char **argv)
+{
 	
-	fclose(fp);
+	if (argc < 2)
+	{
+		set_color(red);
+		printf("you did not provide a binary\n");
+		set_blank();
+		return 1;
+	}
+	
+	while (*++argv)
+	{
+		fetch(*argv);
+	}
+	
 	return 0;
 }
