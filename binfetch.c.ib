@@ -8,34 +8,18 @@
 
 #include <sys/stat.h>
 
+#include "info.h"
 #include "pair.h"
 
 #include "color.h"
 
 const tcolor col = magenta
-const size_t max_tok = 1018
 
 char ascii_art[128][128]
 tcolor ascii_cols[128] =
 	yellow
 	white
 	magenta
-
-typedef struct infob
-	char name  [128]
-	char header[128]
-	char class [128]
-	char endian[128]
-	char arch  [128]
-	char type  [128]
-	char size  [128]
-base
-
-typedef struct label_s
-	char   key[128]
-	char * out
-	bool   used
-label
 
 int   label_count
 label labels[128]
@@ -51,13 +35,13 @@ int max_colors = 0
 #include "crypto.h"
 #include "config.h"
 
-static void set_color(const tcolor c)
+void set_color(const tcolor c)
 	printf("\033[38;2;%d;%d;%dm", c.r, c.g, c.b)
 
-static void set_blank(void)
+void set_blank(void)
 	printf("\033[0m")
 
-static void print_label(const char * label)
+void print_label(const char * label)
 	if (ascii_art[current_line][0] != '\0')
 		set_color(ascii_cols[(int) ((float) current_line / (float) max_height * (float) max_colors)])
 		printf("%s  ", ascii_art[current_line++])
@@ -68,30 +52,12 @@ static void print_label(const char * label)
 	printf("%s: ", label)
 	set_blank()
 
-static void advance(void * tok, const size_t n, FILE * fp)
+void advance(void * tok, const size_t n, FILE * fp)
 	if (!fread(tok, n, 1, fp))
 		printf("error reading from file\n")
 		exit(1)
 
-static void spair_parser(char * out, const byte val, const spr * prs, const size_t size, const char * type)
-	size_t c = 0
-	while(c < size)
-		if (prs[c].key == val)
-			strcpy(out, prs[c].str)
-			break
-		else if(++c == size)
-			sprintf(out, "unknown %s (0x%x)\n", type, val)
-
-static void bpair_parser(char * out, const fbyte val, const bpr * prs, const size_t size, const char * type)
-	size_t c = 0
-	while(c < size)
-		if (prs[c].key == val)
-			strcpy(out, prs[c].str)
-			break
-		else if(++c == size)
-			sprintf(out, "unknown %s (0x%x)\n", type, val)
-
-static void address_parser(char * out, byte *tok, int bits)
+void address_parser(char * out, byte *tok, int bits)
 	strcpy(out, "0x")
 	signed long b = bits == 1 ? 4 : 8
 	while (--b >= 0)
@@ -100,12 +66,12 @@ static void address_parser(char * out, byte *tok, int bits)
 		sprintf(bit, "%02x", tok[b])
 		strcat(out, bit)
 
-static void add_label(char * name, char * out)
+void add_label(char * name, char * out)
 	strcpy(labels[label_count].key, name)
 	labels[label_count].out = out
 	labels[label_count++].used = false
 
-static void get_size(char * out, size_t in)
+void get_size(char * out, size_t in)
 	if (in < 1024)
 		sprintf(out, "%ld b", in)
 	else if (in < 1048576)
@@ -121,9 +87,9 @@ static void get_size(char * out, size_t in)
 	else
 		sprintf(out, "%.1f eb", (double) in / 1152921504606846976)
 
-#include"elf_parser.h"
-#include"mach_parser.h"
-#include"pe_parser.h"
+extern void elf_parser(FILE * fp, base * bs, elf * as)
+extern void mach_parser(FILE * fp, base * bs, int bit, int end)
+extern void pe_parser(FILE * fp, base * bs)
 
 static int fetch(char * path)
 	

@@ -1,16 +1,17 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+#include "info.h"
+#include "pair.h"
+
 #include "elf_arch.h"
 #include "elf_type.h"
 #include "elf_osabi.h"
 
-typedef struct elf_info
-	char version [128]
-	char osabi   [128]
-	char osabi_v [128]
-	char entry   [128]
-	char table   [128]
-elf
+const size_t max_tok = 1018
 
-static void elf_parser(FILE * fp, base * bs, elf * as)
+void elf_parser(FILE * fp, base * bs, elf * as)
 	
 	byte tok[max_tok]
 	
