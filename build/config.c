@@ -6,10 +6,12 @@
 #include "color.h"
 
 extern tcolor ascii_cols[128];
+extern tcolor main_cols[128];
 extern char ascii_art[128][128];
 extern char label_order[128][128];
 extern int  label_order_count;
-extern int max_colors;
+extern int flag_max_colors;
+extern int main_max_colors;
 
 int parse_cfg(const char * path)
 {
@@ -44,7 +46,7 @@ int parse_cfg(const char * path)
 	char tok[128];
 	while (fgets(tok, 128, fp))
 	{
-		if (!strncmp("COLORS", tok, 6))
+		if (!strncmp("FLAG_COLORS", tok, 6))
 		{
 			while (fgets(tok, 128, fp))
 			{
@@ -52,8 +54,20 @@ int parse_cfg(const char * path)
 				{
 					break ;
 				}
-				sscanf(tok + 1, "#%2x%2x%2x", (unsigned int *) &ascii_cols[max_colors].r, (unsigned int *) &ascii_cols[max_colors].g, (unsigned int *) &ascii_cols[max_colors].b);
-				++max_colors;
+				sscanf(tok + 1, "#%2x%2x%2x", (unsigned int *) &ascii_cols[flag_max_colors].r, (unsigned int *) &ascii_cols[flag_max_colors].g, (unsigned int *) &ascii_cols[flag_max_colors].b);
+				++flag_max_colors;
+			}
+		}
+		if (!strncmp("MAIN_COLORS", tok, 6))
+		{
+			while (fgets(tok, 128, fp))
+			{
+				if (tok[0] != '\t')
+				{
+					break ;
+				}
+				sscanf(tok + 1, "#%2x%2x%2x", (unsigned int *) &main_cols[main_max_colors].r, (unsigned int *) &main_cols[main_max_colors].g, (unsigned int *) &main_cols[main_max_colors].b);
+				++main_max_colors;
 			}
 		}
 		if (!strncmp("VALUES", tok, 6))
