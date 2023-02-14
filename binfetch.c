@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <getopt.h>
 #include <string.h>
 #include <unistd.h>
 #include <libgen.h>
@@ -199,7 +200,7 @@ static int fetch(char * path)
 	puts(bs.header);
 	print_label("Class");
 	puts(bs.class);
-	print_label("Endianness");
+	print_label("Endian");
 	puts(bs.endian);
 	print_label("Arch");
 	puts(bs.arch);
@@ -220,9 +221,9 @@ static int fetch(char * path)
 	
 	return fclose(fp);
 }
+
 int main(int argc, char **argv)
 {
-	
 	if (argc < 2)
 	{
 		set_color(red);
@@ -231,9 +232,52 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	
-	while (*++argv)
+	const char * short_options = "h:v";
+	const struct option long_options[] =
 	{
-		fetch(*argv);
+		{
+			"help",    no_argument, 0, 'h'
+		},
+		
+		{
+			"version", no_argument, 0, 'V'
+		},
+		
+		{
+			0, 0, 0, 0
+		},
+	};
+	while (1)
+	{
+		const int opt = getopt_long(argc, argv, short_options, long_options, NULL);
+		
+		if (-1 == opt)
+		{
+			break;
+		}
+		
+		switch (opt)
+		{
+			case '?': ;// Unrecognized option
+			case 'h':
+				printf("help\n");
+				return 0;
+			case 'V':
+				printf("v1");
+				return 0;
+			default:
+		}
+	}
+	
+	if (optind >= argc)
+	{
+		fprintf(stderr, "Expected argument after options\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	for(; optind < argc; optind++)
+	{
+		fetch(argv[optind]);
 	}
 	
 	return 0;
