@@ -4,16 +4,31 @@ CONFIG =/home/nik/.config/binfetch
 CFLAGS = -Os -Wall
 LDFLAGS = -lssl -lcrypto -flto
 
-HEADERS = *.h.ib
-IBCFILES  = binfetch.c.ib elf.c.ib mach.c.ib pe.c.ib pair.c.ib crypto.c.ib info.c.ib bin_op.c.ib config.c.ib
-CFILES  = binfetch.c elf.c mach.c pe.c pair.c crypto.c info.c bin_op.c config.c
+IB_HEADERS = $(wildcard *.h.ib)
+IB_CFILES  = $(wildcard *.c.ib)
+HEADERS = $(patsubst %.h.ib, build/%.h, $(IB_HEADERS))
+OBJS = $(patsubst %.c.ib, build/%.o, $(IB_CFILES))
+CFILES = $(patsubst %.c.ib, build/%.c, $(IB_CFILES))
 
-all:
-	ib ${HEADERS}
-	ib -in ${IBCFILES} --flags "${CFLAGS} ${LDFLAGS}" -o binfetch
+build/%.h: %.h.ib build
+	ib $< -o $@
+
+build/%.c: %.c.ib build
+	ib $< -o $@
+
+build/%.o: build/%.c build
+	gcc $< $(CFLAGS) -I build -c -o $@
+
+all: $(HEADERS) $(CFILES) $(OBJS)
+	gcc $(OBJS) $(LDFLAGS) -o binfetch
+	strip binfetch
 
 bootstrap:
-	gcc ${CFILES} -o binfetch ${CFLAGS} ${LDFLAGS}
+	gcc ${CFILES} -o binfetch ${CFLAGS} ${LDFLAGS} -I build
+	strip binfetch
+
+clean:
+	rm build/*.h build/*.o build/*.c
 
 install:
 	mkdir -p ${CONFIG}

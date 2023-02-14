@@ -101,7 +101,7 @@ static int fetch(char * path)
 	else if (tok == 0x0a324655)
 		strcpy(bs.header, "UF2")
 	else
-		sprintf(bs.header, "unknown %x\n", tok << 16)
+		sprintf(bs.header, "unknown %x", tok << 16)
 	add_label("Header", bs.header)
 	
 	struct stat st
