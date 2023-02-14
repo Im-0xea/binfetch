@@ -10,21 +10,22 @@ HEADERS = $(patsubst %.h.ib, build/%.h, $(IB_HEADERS))
 OBJS = $(patsubst %.c.ib, build/%.o, $(IB_CFILES))
 CFILES = $(patsubst %.c.ib, build/%.c, $(IB_CFILES))
 
-build/%.h: %.h.ib build
+build/%.h: %.h.ib
 	ib $< -o $@
 
-build/%.c: %.c.ib build
+build/%.c: %.c.ib
 	ib $< -o $@
 
-build/%.o: build/%.c build
+build/%.o: build/%.c
 	gcc $< $(CFLAGS) -I build -c -o $@
 
-all: $(HEADERS) $(CFILES) $(OBJS)
+binfetch: $(HEADERS) $(CFILES) $(OBJS)
 	gcc $(LDFLAGS) $(OBJS) -o binfetch
+	
+all: binfetch
 	strip binfetch
 
-bootstrap:
-	gcc ${CFILES} -o binfetch ${CFLAGS} ${LDFLAGS} -I build
+bootstrap: $(OBJS)
 	strip binfetch
 
 clean:
