@@ -29,7 +29,7 @@ bootstrap: binfetch
 	strip binfetch
 
 clean:
-	rm build/*.h build/*.o build/*.c
+	rm -f build/*.h build/*.o build/*.c binfetch
 
 install:
 	mkdir -p ${CONFIG}
