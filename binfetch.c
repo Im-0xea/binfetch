@@ -37,9 +37,10 @@ base;
 int current_line;
 int max_width;
 int max_height;
-int max_colors = 3;
+int max_colors = 0;
 
 #include "crypto.h"
+#include "config.h"
 
 static void set_color(const tcolor c)
 {
@@ -305,6 +306,12 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Expected argument after options\n");
 		exit(EXIT_FAILURE);
 	}
+	
+	if (parse_cfg(NULL))
+	{
+		return 1;
+	}
+	
 	
 	for(; optind < argc; optind++)
 	{
