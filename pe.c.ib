@@ -4,6 +4,7 @@
 
 #include "info.h"
 #include "pair.h"
+#include "bin_op.h"
 
 #include "pe_arch.h"
 

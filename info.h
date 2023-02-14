@@ -28,3 +28,5 @@ typedef struct label_s
 	bool   used;
 }
 label;
+
+extern void add_label(char * name, char * out);

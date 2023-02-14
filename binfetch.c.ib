@@ -10,8 +10,10 @@
 
 #include "info.h"
 #include "pair.h"
+#include "config.h"
 
 #include "color.h"
+#include "bin_op.h"
 
 const tcolor col = magenta
 
@@ -32,8 +34,6 @@ int max_width
 int max_height
 int max_colors = 0
 
-#include "config.h"
-
 void set_color(const tcolor c)
 	printf("\033[38;2;%d;%d;%dm", c.r, c.g, c.b)
 
@@ -50,41 +50,6 @@ void print_label(const char * label)
 	set_color(col)
 	printf("%s: ", label)
 	set_blank()
-
-void advance(void * tok, const size_t n, FILE * fp)
-	if (!fread(tok, n, 1, fp))
-		printf("error reading from file\n")
-		exit(1)
-
-void address_parser(char * out, byte *tok, int bits)
-	strcpy(out, "0x")
-	signed long b = bits == 1 ? 4 : 8
-	while (--b >= 0)
-		if (!tok[b]) continue
-		char bit[3]
-		sprintf(bit, "%02x", tok[b])
-		strcat(out, bit)
-
-void add_label(char * name, char * out)
-	strcpy(labels[label_count].key, name)
-	labels[label_count].out = out
-	labels[label_count++].used = false
-
-void get_size(char * out, size_t in)
-	if (in < 1024)
-		sprintf(out, "%ld b", in)
-	else if (in < 1048576)
-		sprintf(out, "%.1f kb", (double) in / 1024)
-	else if (in < 1073741824)
-		sprintf(out, "%.1f mb", (double) in / 1048576)
-	else if (in < 1099511627776)
-		sprintf(out, "%.1f gb", (double) in / 1073741824)
-	else if (in < 1125899906842624)
-		sprintf(out, "%.1f tb", (double) in / 1099511627776)
-	else if (in < 1152921504606846976)
-		sprintf(out, "%.1f pb", (double) in / 1125899906842624)
-	else
-		sprintf(out, "%.1f eb", (double) in / 1152921504606846976)
 
 extern void elf_parser(FILE * fp, base * bs, elf * as)
 extern void mach_parser(FILE * fp, base * bs, int bit, int end)
