@@ -26,5 +26,10 @@ static int parse_cfg(const char * path)
 				sscanf(tok + 1, "#%2x%2x%2x", (unsigned int *) &ascii_cols[max_colors].r, (unsigned int *) &ascii_cols[max_colors].g, (unsigned int *) &ascii_cols[max_colors].b)
 				++max_colors
 		if (!strncmp("VALUES", tok, 6))
+			while (fgets(tok, 128, fp))
+				if (tok[0] != '\t')
+					break
+				tok[strlen(tok) - 1] = '\0'
+				strcpy(label_order[label_order_count++], tok + 1) 
 	
 	return 0

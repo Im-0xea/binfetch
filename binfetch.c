@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <getopt.h>
 #include <string.h>
 #include <unistd.h>
@@ -33,6 +34,20 @@ typedef struct infob
 	char size  [128];
 }
 base;
+
+typedef struct label_s
+{
+	char   key[128];
+	char * out;
+	bool   used;
+}
+label;
+
+int   label_count;
+label labels[128];
+
+int  label_order_count = 0;
+char label_order[128][128];
 
 int current_line;
 int max_width;
@@ -125,6 +140,13 @@ static void address_parser(char * out, byte *tok, int bits)
 	}
 }
 
+static void add_label(char * name, char * out)
+{
+	strcpy(labels[label_count].key, name);
+	labels[label_count].out = out;
+	labels[label_count++].used = false;
+}
+
 static void get_size(char * out, size_t in)
 {
 	if (in < 1024)
@@ -174,6 +196,7 @@ static int fetch(char * path)
 		return 1;
 	}
 	
+	label_count = 0;
 	current_line = 0;
 	max_width = 0;
 	max_height = 0;
@@ -188,15 +211,17 @@ static int fetch(char * path)
 	base bs;
 	
 	strcpy(bs.name, basename(path));
+	add_label("Name", bs.name);
 	
 	fbyte tok = 0;
 	
 	advance(&tok, 4, fp);
 	
+	elf as;
 	if (tok == 0x464c457f)
 	{
-		strcpy(bs.header, "ELF");
-		elf_parser(fp, &bs);
+		strcpy(bs.header, "ELF\0");
+		elf_parser(fp, &bs, &as);
 	}
 	else if (tok == 0xfeedfacf || tok == 0xfeedfacf || tok == 0xcefaedfe || tok == 0xcffaedfe)
 	{
@@ -219,27 +244,36 @@ static int fetch(char * path)
 	}
 	else
 	{
-		printf("unknown %x\n", tok << 16);
+		sprintf(bs.header, "unknown %x\n", tok << 16);
 	}
+	add_label("Header", bs.header);
 	
 	struct stat st;
 	stat(path, &st);
 	get_size(bs.size, st.st_size);
+	add_label("Size", bs.size);
 	
-	print_label("Name");
-	puts(bs.name);
-	print_label("Header");
-	puts(bs.header);
-	print_label("Class");
-	puts(bs.class);
-	print_label("Endian");
-	puts(bs.endian);
-	print_label("Arch");
-	puts(bs.arch);
-	print_label("Type");
-	puts(bs.type);
-	print_label("Size");
-	puts(bs.size);
+	for (int x = 0; x < label_order_count; x++)
+	{
+		for (int y = 0; y < label_count; y++)
+		{
+			if (!strcmp(label_order[x], labels[y].key))
+			{
+				print_label(labels[y].key);
+				puts(labels[y].out);
+				labels[y].used = true;
+			}
+		}
+	}
+	
+	for (int z = 0; z < label_count; z++)
+	{
+		if (!labels[z].used)
+		{
+			print_label(labels[z].key);
+			puts(labels[z].out);
+		}
+	}
 	
 	for (; current_line < 64; current_line++)
 	{

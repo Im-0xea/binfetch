@@ -43,7 +43,18 @@ static int parse_cfg(const char * path)
 				++max_colors;
 			}
 		}
-		if (!strncmp("VALUES", tok, 6));
+		if (!strncmp("VALUES", tok, 6))
+		{
+			while (fgets(tok, 128, fp))
+			{
+				if (tok[0] != '\t')
+				{
+					break;
+				}
+				tok[strlen(tok) - 1] = '\0';
+				strcpy(label_order[label_order_count++], tok + 1) ;
+			}
+		}
 	}
 	
 	return 0;
