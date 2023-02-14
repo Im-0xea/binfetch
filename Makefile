@@ -1,7 +1,7 @@
 PREFIX =/usr
 CONFIG =/home/nik/.config/binfetch
 
-CFLAGS = -Os -Wall -g
+CFLAGS = -Os -Wall
 LDFLAGS = -lssl -lcrypto
 
 HEADERS = *.h.ib

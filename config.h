@@ -1,7 +1,7 @@
 static int parse_cfg(const char * path)
 {
 	FILE * fp;
-	if (!path)
+	if (path[0] == '\0')
 	{
 		while (1)
 		{
