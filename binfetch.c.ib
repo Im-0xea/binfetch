@@ -88,19 +88,19 @@ static void address_parser(char * out, byte *tok, int bits)
 
 static void get_size(char * out, size_t in)
 	if (in < 1024)
-		sprintf(out, "%ld b", in)
+		sprintf(out, "%.1f b", (double) in)
 	else if (in < 1048576)
-		sprintf(out, "%ld kb", in / 1024)
+		sprintf(out, "%.1f kb", (double) in / 1024)
 	else if (in < 1073741824)
-		sprintf(out, "%ld mb", in / 1048576)
+		sprintf(out, "%.1f mb", (double) in / 1048576)
 	else if (in < 1099511627776)
-		sprintf(out, "%ld gb", in / 1073741824)
+		sprintf(out, "%.1f gb", (double) in / 1073741824)
 	else if (in < 1125899906842624)
-		sprintf(out, "%ld tb", in / 1099511627776)
+		sprintf(out, "%.1f tb", (double) in / 1099511627776)
 	else if (in < 1152921504606846976)
-		sprintf(out, "%ld pb", in / 1125899906842624)
+		sprintf(out, "%.1f pb", (double) in / 1125899906842624)
 	else
-		sprintf(out, "%ld eb", in / 1152921504606846976)
+		sprintf(out, "%.1f eb", (double) in / 1152921504606846976)
 
 #include"elf_parser.h"
 #include"mach_parser.h"
