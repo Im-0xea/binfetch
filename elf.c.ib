@@ -4,6 +4,7 @@
 
 #include "info.h"
 #include "pair.h"
+#include "bin_op.h"
 
 #include "elf_arch.h"
 #include "elf_type.h"

@@ -4,6 +4,7 @@
 
 #include "info.h"
 #include "pair.h"
+#include "bin_op.h"
 
 #include "mach_arch.h"
 #include "mach_type.h"

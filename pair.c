@@ -38,3 +38,4 @@ void bpair_parser(char * out, const fbyte val, const bpr * prs, const size_t siz
 		}
 	}
 }
+
