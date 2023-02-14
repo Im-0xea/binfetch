@@ -2,9 +2,7 @@
 
 A neofetch inspired fetching utility for executables, written in C
 
-ELF                     |  MACH-O
-:----------------------:|:-------------------------:
-![image](elf.png "ELF") | ![image](mach.png "MACH")
+![image](uwu.png "img")
 
 ### Build
 
