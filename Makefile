@@ -5,8 +5,8 @@ CFLAGS = -Os -Wall
 LDFLAGS = -lssl -lcrypto -flto
 
 HEADERS = *.h.ib
-IBCFILES  = binfetch.c.ib elf.c.ib mach.c.ib pe.c.ib pair.c.ib
-CFILES  = binfetch.c elf.c mach.c pe.c pair.c
+IBCFILES  = binfetch.c.ib elf.c.ib mach.c.ib pe.c.ib pair.c.ib crypto.c.ib
+CFILES  = binfetch.c elf.c mach.c pe.c pair.c crypto.c
 
 all:
 	ib ${HEADERS}

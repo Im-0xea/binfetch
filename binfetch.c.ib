@@ -32,7 +32,6 @@ int max_width
 int max_height
 int max_colors = 0
 
-#include "crypto.h"
 #include "config.h"
 
 void set_color(const tcolor c)
@@ -90,6 +89,7 @@ void get_size(char * out, size_t in)
 extern void elf_parser(FILE * fp, base * bs, elf * as)
 extern void mach_parser(FILE * fp, base * bs, int bit, int end)
 extern void pe_parser(FILE * fp, base * bs)
+extern void checksum_art(FILE * fp)
 
 static int fetch(char * path)
 	
@@ -109,7 +109,7 @@ static int fetch(char * path)
 	for (int i = 0; i < 64; i++)
 		bzero(ascii_art[i], 64)
 	
-	checksum_art(fp, EVP_sha512())
+	checksum_art(fp)
 	
 	base bs
 	
