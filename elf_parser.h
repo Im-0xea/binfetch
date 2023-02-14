@@ -12,9 +12,8 @@ typedef struct elf_info
 }
 elf;
 
-static void elf_parser(FILE * fp, base * bs)
+static void elf_parser(FILE * fp, base * bs, elf * as)
 {
-	elf as;
 	
 	byte tok[max_tok];
 	
@@ -37,6 +36,8 @@ static void elf_parser(FILE * fp, base * bs)
 		strcpy(bs->class, "unknown");
 	}
 	
+	add_label("Class", bs->class);
+	
 	if (tok[1] == 0x01)
 	{
 		strcpy(bs->endian, "little endian");
@@ -50,26 +51,32 @@ static void elf_parser(FILE * fp, base * bs)
 		strcpy(bs->endian, "unknown endian");
 	}
 	
+	add_label("Endian", bs->endian);
+	
 	
 	if (tok[2] == 0x01)
 	{
-		strcpy(as.version, "ELFv1");
+		strcpy(as->version, "ELFv1");
 	}
 	else if (tok[2] == 0x00)
 	{
-		strcpy(as.version, "noncompliant");
+		strcpy(as->version, "noncompliant");
 	}
 	
+	add_label("Version", as->version);
 	
-	spair_parser(as.osabi, tok[3], osabis, sizeof osabis / sizeof(spr), "abi");
+	spair_parser(as->osabi, tok[3], osabis, sizeof osabis / sizeof(spr), "abi");
+	
+	add_label("OS ABI", as->osabi);
 	
 	if (tok[4] != 0)
 	{
-		sprintf(as.osabi_v, "%d", tok[4]);
+		sprintf(as->osabi_v, "%d", tok[4]);
+		add_label("ABI Version", as->osabi);
 	}
 	else
 	{
-		as.osabi_v[0] = '\0';
+		as->osabi_v[0] = '\0';
 	}
 	
 	while (fread(tok, 1, 1, fp) && tok[0] == 0);
@@ -81,9 +88,13 @@ static void elf_parser(FILE * fp, base * bs)
 	
 	spair_parser(bs->type, tok[0], elf_types, sizeof elf_types / sizeof(spr), "type");
 	
+	add_label("Type", bs->type);
+	
 	advance(tok, 2, fp);
 	
 	spair_parser(bs->arch, tok[0], elf_arches, sizeof elf_arches / sizeof(spr), "arch");
+	
+	add_label("Arch", bs->arch);
 	
 	advance(tok, 4, fp);
 	
@@ -91,23 +102,13 @@ static void elf_parser(FILE * fp, base * bs)
 	
 	advance(tok, bits == 1 ? 4 : 8, fp);
 	
-	address_parser(as.entry, tok, bits);
+	address_parser(as->entry, tok, bits);
+	
+	add_label("Entry", as->entry);
 	
 	advance(tok, bits == 1 ? 4 : 8, fp);
 	
-	address_parser(as.table, tok, bits);
+	address_parser(as->table, tok, bits);
 	
-	print_label("Version");
-	puts(as.version);
-	print_label("OS ABI");
-	puts(as.osabi);
-	if (as.osabi_v[0] != '\0')
-	{
-		print_label("ABI Version");
-		puts(as.osabi_v);
-	}
-	print_label("Entry");
-	puts(as.entry);
-	print_label("table");
-	puts(as.table);
+	add_label("Table", as->table);
 }
