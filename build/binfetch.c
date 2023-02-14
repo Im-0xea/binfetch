@@ -15,15 +15,9 @@
 #include "color.h"
 #include "bin_op.h"
 
-const tcolor col = magenta;
-
 char ascii_art[128][128];
-tcolor ascii_cols[128] =
-{
-	yellow,
-	white,
-	magenta
-};
+tcolor ascii_cols[128];
+tcolor main_cols[128];
 
 int   label_count;
 label labels[128];
@@ -34,7 +28,8 @@ char label_order[128][128];
 int current_line;
 int max_width;
 int max_height;
-int max_colors = 0;
+int flag_max_colors = 0;
+int main_max_colors = 0;
 
 void set_color(const tcolor c)
 {
@@ -50,7 +45,7 @@ void print_label(const char * label)
 {
 	if (ascii_art[current_line][0] != '\0')
 	{
-		set_color(ascii_cols[(int) ((float) current_line / (float) max_height * (float) max_colors)]);
+		set_color(ascii_cols[(int) ((float) current_line / (float) max_height * (float) flag_max_colors)]);
 		printf("%s  ", ascii_art[current_line++]);
 		set_blank();
 	}
@@ -58,7 +53,7 @@ void print_label(const char * label)
 	{
 		printf("%*s  ", max_width, " ");
 	}
-	set_color(col);
+	set_color(main_cols[(int) ((float) current_line / (float) (label_count + 1) * (float) main_max_colors)]);
 	printf("%s: ", label);
 	set_blank();
 }
@@ -164,7 +159,7 @@ static int fetch(char * path)
 	{
 		if (ascii_art[current_line][0] != '\0')
 		{
-			set_color(ascii_cols[(int) ((float) (current_line) / (float) max_height * (float) max_colors)]);
+			set_color(ascii_cols[(int) ((float) (current_line) / (float) max_height * (float) flag_max_colors)]);
 			printf("%s\n", ascii_art[current_line]);
 			set_blank();
 		}

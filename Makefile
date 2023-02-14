@@ -20,7 +20,7 @@ build/%.o: build/%.c build
 	gcc $< $(CFLAGS) -I build -c -o $@
 
 all: $(HEADERS) $(CFILES) $(OBJS)
-	gcc $(OBJS) $(LDFLAGS) -o binfetch
+	gcc $(LDFLAGS) $(OBJS) -o binfetch
 	strip binfetch
 
 bootstrap:
