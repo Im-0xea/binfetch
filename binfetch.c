@@ -18,8 +18,20 @@ tcolor ascii_cols[128] =
 {
 	yellow,
 	white,
-	magenta	
+	magenta
 };
+
+typedef struct infob
+{
+	char name  [128];
+	char header[128];
+	char class [128];
+	char endian[128];
+	char arch  [128];
+	char type  [128];
+	char size  [128];
+}
+base;
 
 int current_line;
 int max_width;
@@ -64,37 +76,50 @@ static void advance(void * tok, const size_t n, FILE * fp)
 	}
 }
 
-static void spair_parser(const byte val, const spr * prs, const size_t size, const char * type)
+static void spair_parser(char * out, const byte val, const spr * prs, const size_t size, const char * type)
 {
 	size_t c = 0;
 	while(c < size)
 	{
 		if (prs[c].key == val)
 		{
-			printf("%s\n", prs[c].str);
+			strcpy(out, prs[c].str);
 			break;
 		}
 		else if(++c == size)
 		{
-			printf("unknown %s (0x%x)\n", type, val);
+			sprintf(out, "unknown %s (0x%x)\n", type, val);
 		}
 	}
 }
 
-static void bpair_parser(const fbyte val, const bpr * prs, const size_t size, const char * type)
+static void bpair_parser(char * out, const fbyte val, const bpr * prs, const size_t size, const char * type)
 {
 	size_t c = 0;
 	while(c < size)
 	{
 		if (prs[c].key == val)
 		{
-			printf("%s\n", prs[c].str);
+			strcpy(out, prs[c].str);
 			break;
 		}
 		else if(++c == size)
 		{
-			printf("unknown %s (0x%x)\n", type, val);
+			sprintf(out, "unknown %s (0x%x)\n", type, val);
 		}
+	}
+}
+
+static void address_parser(char * out, byte *tok, int bits)
+{
+	strcpy(out, "0x");
+	signed long b = bits == 1 ? 4 : 8;
+	while (--b >= 0)
+	{
+		if (!tok[b]) continue;
+		char bit[3];
+		sprintf(bit, "%02x", tok[b]);
+		strcat(out, bit);
 	}
 }
 
@@ -126,51 +151,62 @@ static int fetch(char * path)
 	
 	checksum_art(fp, EVP_sha512());
 	
-	print_label("Name");
+	base bs;
 	
-	puts(basename(path));
-	
+	strcpy(bs.name, basename(path));
 	
 	fbyte tok = 0;
 	
 	advance(&tok, 4, fp);
 	
-	print_label("Header");
-	
 	if (tok == 0x464c457f)
 	{
-		printf("ELF\n");
-		elf_parser(fp);
+		strcpy(bs.header, "ELF");
+		elf_parser(fp, &bs);
 	}
 	else if (tok == 0xfeedfacf || tok == 0xfeedfacf || tok == 0xcefaedfe || tok == 0xcffaedfe)
 	{
-		printf("MACH-O\n");
+		strcpy(bs.header, "MACH-O");
 		int cond = tok >> 24 != 0xfe;
-		mach_parser(fp, cond, !cond ? tok << 24 == 0xce ? 0 : 1 : tok >> 24 == 0xce ? 0 : 1);
+		mach_parser(fp,&bs, cond, !cond ? tok << 24 == 0xce ? 0 : 1 : tok >> 24 == 0xce ? 0 : 1);
 	}
 	else if (tok == 0xfa405a4d)
 	{
-		printf("Compressed Binary\n");
+		strcpy(bs.header, "COMPRESSED BIN");
 	}
 	else if ((tok & 0x0000ffff) == 0x5a4d)
 	{
-		printf("PE\n");
-		pe_parser(fp);
+		strcpy(bs.header, "PE");
+		pe_parser(fp, &bs);
 	}
 	else if (tok == 0x0a324655)
 	{
-		printf("uf2\n");
+		strcpy(bs.header, "UF2");
 	}
 	else
 	{
 		printf("unknown %x\n", tok << 16);
 	}
-	print_label("Size");
 	
 	struct stat st;
 	stat(path, &st);
 	size_t sz = st.st_size;
-	printf("0x%lx\n", sz);
+	sprintf(bs.size, "0x%lx", sz);
+	
+	print_label("Name");
+	puts(bs.name);
+	print_label("Header");
+	puts(bs.header);
+	print_label("Class");
+	puts(bs.class);
+	print_label("Endianness");
+	puts(bs.endian);
+	print_label("Arch");
+	puts(bs.arch);
+	print_label("Type");
+	puts(bs.type);
+	print_label("Size");
+	puts(bs.size);
 	
 	for (; current_line < 64; current_line++)
 	{
