@@ -1,7 +1,14 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+#include "info.h"
+#include "pair.h"
+
 #include "mach_arch.h"
 #include "mach_type.h"
 
-static void mach_parser(FILE * fp, base * bs, int bit, int end)
+void mach_parser(FILE * fp, base * bs, int bit, int end)
 	fbyte tok = 0
 	
 	advance(&tok, 4, fp)
