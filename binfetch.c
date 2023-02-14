@@ -138,9 +138,21 @@ static void get_size(char * out, size_t in)
 	{
 		sprintf(out, "%ld mb", in / 1048576);
 	}
-	else
+	else if (in < 1099511627776)
 	{
 		sprintf(out, "%ld gb", in / 1073741824);
+	}
+	else if (in < 1125899906842624)
+	{
+		sprintf(out, "%ld tb", in / 1099511627776);
+	}
+	else if (in < 1152921504606846976)
+	{
+		sprintf(out, "%ld pb", in / 1125899906842624);
+	}
+	else
+	{
+		sprintf(out, "%ld eb", in / 1152921504606846976);
 	}
 }
 
