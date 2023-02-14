@@ -298,21 +298,27 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	
-	const char * short_options = "h:v";
+	const char * short_options = "h:v:c";
 	const struct option long_options[] =
 	{
 		{
-			"help",    no_argument, 0, 'h'
+			"help",    no_argument,       0, 'h'
 		},
 		
 		{
-			"version", no_argument, 0, 'V'
+			"version", no_argument,       0, 'V'
+		},
+		
+		{
+			"config",  required_argument, 0, 'c'
 		},
 		
 		{
 			0, 0, 0, 0
 		},
 	};
+	
+	char config[128] = "";
 	while (1)
 	{
 		const int opt = getopt_long(argc, argv, short_options, long_options, NULL);
@@ -326,11 +332,17 @@ int main(int argc, char **argv)
 		{
 			case '?': ;// Unrecognized option
 			case 'h':
-				printf("help\n");
+				printf("Usage: binfetch [OPTION] [EXECUTABLES]\n\n" \
+				     " -h, --help    -> prints this\n" \
+				     " -V, --version -> prints version\n" \
+				     " -c, --config  -> set config file\n");
 				return 0;
 			case 'V':
 				printf("v1");
 				return 0;
+			case 'c':
+				strcpy(config, optarg);
+				break;
 			default:
 		}
 	}
@@ -341,7 +353,7 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 	
-	if (parse_cfg(NULL))
+	if (parse_cfg(config))
 	{
 		return 1;
 	}

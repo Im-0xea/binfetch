@@ -12,5 +12,5 @@ ELF                     |  MACH-O
 $ make bootstrap
 ~~~
 ~~~
-$ (root) make install
+$ (root) make install CONFIG=<config folder of choice, I suggest $HOME/.config/binfetch> 
 ~~~
