@@ -8,3 +8,5 @@ static void pe_parser(FILE * fp, base * bs)
 	advance(&toki, 2, fp)
 	
 	bpair_parser(bs->arch, toki, pe_arches, sizeof pe_arches / sizeof(bpr), "arch")
+	
+	add_label("Arch", bs->arch)
