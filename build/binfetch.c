@@ -31,6 +31,11 @@ int max_height;
 int flag_max_colors = 0;
 int main_max_colors = 0;
 
+extern void elf_parser(FILE * fp, base * bs, elf * as);
+extern void mach_parser(FILE * fp, base * bs, int bit, int end);
+extern void pe_parser(FILE * fp, base * bs);
+extern void checksum_art(FILE * fp);
+
 void set_color(const tcolor c)
 {
 	printf("\033[38;2;%d;%d;%dm", c.r, c.g, c.b);
@@ -57,11 +62,6 @@ void print_label(const char * label)
 	printf("%s: ", label);
 	set_blank();
 }
-
-extern void elf_parser(FILE * fp, base * bs, elf * as);
-extern void mach_parser(FILE * fp, base * bs, int bit, int end);
-extern void pe_parser(FILE * fp, base * bs);
-extern void checksum_art(FILE * fp);
 
 static int fetch(char * path)
 {
