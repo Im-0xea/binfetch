@@ -128,7 +128,7 @@ static void get_size(char * out, size_t in)
 {
 	if (in < 1024)
 	{
-		sprintf(out, "%.1f b", (double) in);
+		sprintf(out, "%ld b", in);
 	}
 	else if (in < 1048576)
 	{
