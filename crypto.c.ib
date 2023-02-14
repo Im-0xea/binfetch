@@ -1,8 +1,17 @@
+#include <stdio.h>
+#include <string.h>
+
 #include <openssl/evp.h>
+
+extern char ascii_art[128][128]
+extern int max_width
+extern int max_height
+extern int max_colors 
 
 const int cw = 10
 
-static void checksum_art(FILE * fp, const EVP_MD * type)
+void checksum_art(FILE * fp)
+	const EVP_MD * type = EVP_sha512()
 	int i, bytes
 	
 	EVP_MD_CTX *ctx
