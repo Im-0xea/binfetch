@@ -7,8 +7,8 @@ A neofetch inspired fetching utility for executables, written in C
 ### Build
 
 ~~~
-$ make bootstrap
+$ make bootstrap CONFIG=<config folder of choice, I suggest $HOME/.config/binfetch> 
 ~~~
 ~~~
-$ (root) make install CONFIG=<config folder of choice, I suggest $HOME/.config/binfetch> 
+$ (root) make install CONFIG=<config>
 ~~~

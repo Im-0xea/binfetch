@@ -1,5 +1,5 @@
-PREFIX =/usr
-CONFIG =/home/nik/.config/binfetch
+PREFIX = /usr
+CONFIG = /tmp
 
 CFLAGS = -Os -Wall
 LDFLAGS = -lssl -lcrypto -flto
@@ -20,7 +20,7 @@ build/%.c: %.c.ib
 	ib $< -o $@
 
 build/%.o: build/%.c
-	gcc $< $(CFLAGS) -I build -c -o $@
+	gcc $< $(CFLAGS) -I build -D CONFIG="$(CONFIG)" -c -o $@ 
 
 binfetch: $(HEADERS) $(CFILES) $(OBJS)
 	gcc $(LDFLAGS) $(OBJS) -o binfetch
