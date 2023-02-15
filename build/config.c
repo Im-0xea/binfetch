@@ -5,6 +5,10 @@
 #include "pair.h"
 #include "color.h"
 
+#ifndef CONFIG
+	#define CONFIG /tmp
+#endif
+
 extern tcolor ascii_cols[128];
 extern tcolor main_cols[128];
 extern char ascii_art[128][128];
@@ -28,6 +32,12 @@ int parse_cfg(const char * path)
 				break;
 			}
 			// add what ever paths you want
+			strcpy(path, getenv("HOME"));
+			strcat(path, "CONFIG");
+			if ((fp = fopen(path, "r")))
+			{
+				break;
+			}
 			printf("failed to open standard config\n");
 			return 1;
 		}
