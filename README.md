@@ -2,7 +2,7 @@
 
 A neofetch inspired fetching utility for executables, written in C
 
-![image](uwu.png "img")
+![image](https://socki.moe/binfetch.png "img")
 
 ### Build
 
