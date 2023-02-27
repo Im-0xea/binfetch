@@ -99,17 +99,20 @@ int fetch(char * path)
 	if (tok == 0x464c457f)
 	{
 		strcpy(ibuffer[buffer_pos], "ELF\0");
+		add_label("Header", ibuffer[buffer_pos++]);
 		elf_parser(fp);
 	}
 	else if (tok == 0xfeedfacf || tok == 0xfeedfacf || tok == 0xcefaedfe || tok == 0xcffaedfe)
 	{
 		strcpy(ibuffer[buffer_pos], "MACH-O");
+		add_label("Header", ibuffer[buffer_pos++]);
 		int cond = tok >> 24 != 0xfe;
 		mach_parser(fp, cond, !cond ? tok << 24 == 0xce ? 0 : 1 : tok >> 24 == 0xce ? 0 : 1);
 	}
 	else if (tok == 0xfa405a4d)
 	{
 		strcpy(ibuffer[buffer_pos], "COMPRESSED BIN");
+		add_label("Header", ibuffer[buffer_pos++]);
 	}
 	else if ((tok & 0x0000ffff) == 0x5a4d)
 	{
@@ -119,27 +122,31 @@ int fetch(char * path)
 		{
 			rewind(fp);
 			strcpy(ibuffer[buffer_pos], "MZ");
+			add_label("Header", ibuffer[buffer_pos++]);
 			mz_parser(fp);
 		}
 		else
 		{
 			strcpy(ibuffer[buffer_pos], "PE");
+			add_label("Header", ibuffer[buffer_pos++]);
 			pe_parser(fp);
 		}
 	}
 	else if (tok == 0x0a324655)
 	{
 		strcpy(ibuffer[buffer_pos], "UF2");
+		add_label("Header", ibuffer[buffer_pos++]);
 	}
-	else if (tok == 0x21230000)
+	else if ((tok & 0xffff) == 0x2123)
 	{
-		strcpy(ibuffer[buffer_pos], "Non Binary");
+		strcpy(ibuffer[buffer_pos], "Script");
+		add_label("Header", ibuffer[buffer_pos++]);
+		sh_parser(fp);
 	}
 	else
 	{
-		sprintf(ibuffer[buffer_pos], "unknown 0x%x", tok);
+		sprintf(ibuffer[buffer_pos], "unknown 0x%x", tok & 0xffff);
 	}
-	add_label("Header", ibuffer[buffer_pos++]);
 	
 	struct stat st;
 	stat(path, &st);
