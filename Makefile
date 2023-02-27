@@ -10,8 +10,7 @@ HEADERS = $(patsubst %.h.ib, build/%.h, $(IB_HEADERS))
 OBJS = $(patsubst %.c.ib, build/%.o, $(IB_CFILES))
 CFILES = $(patsubst %.c.ib, build/%.c, $(IB_CFILES))
 
-all: clean binfetch
-	strip binfetch
+all: binfetch
 
 build/%.h: %.h.ib
 	ib $< -o $@

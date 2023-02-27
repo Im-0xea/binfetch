@@ -8,7 +8,7 @@ extern int max_width
 extern int max_height
 extern int max_colors 
 
-const int cw = 10
+const int cw = 8
 
 void checksum_art(FILE * fp)
 	const EVP_MD * type = EVP_sha512()
