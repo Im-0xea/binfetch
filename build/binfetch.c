@@ -143,9 +143,15 @@ int fetch(char * path)
 		add_label("Header", ibuffer[buffer_pos++]);
 		sh_parser(fp);
 	}
+	else if (tok == 0xbebafeca)
+	{
+		strcpy(ibuffer[buffer_pos], "Java Class");
+		add_label("Header", ibuffer[buffer_pos++]);
+	}
 	else
 	{
-		sprintf(ibuffer[buffer_pos], "unknown 0x%x", tok & 0xffff);
+		sprintf(ibuffer[buffer_pos], "unknown 0x%x", tok);
+		add_label("Header", ibuffer[buffer_pos++]);
 	}
 	
 	struct stat st;
