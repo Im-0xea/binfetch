@@ -11,8 +11,10 @@ extern int  buffer_pos
 
 void sh_parser(FILE * fp)
 	fseek(fp, -2, SEEK_CUR)
-	fgets(ibuffer[buffer_pos], 255, fp)
-	ibuffer[buffer_pos][strlen(ibuffer[buffer_pos]) - 1] = '\0'
+	if (fgets(ibuffer[buffer_pos], 255, fp))
+		ibuffer[buffer_pos][strlen(ibuffer[buffer_pos]) - 1] = '\0'
+	else
+		strcpy(ibuffer[buffer_pos], "failed to parse")
 	add_label("Interpreter", ibuffer[buffer_pos++])
 	
 	return

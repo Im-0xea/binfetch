@@ -8,7 +8,10 @@
 
 #include "pe_arch.h"
 
-void pe_parser(FILE * fp, base * bs)
+extern char ibuffer[128][128];
+extern int  buffer_pos;
+
+void pe_parser(FILE * fp)
 {
 	unsigned short tok[1024];
 	
@@ -16,7 +19,7 @@ void pe_parser(FILE * fp, base * bs)
 	unsigned short toki = 0;
 	advance(&toki, 2, fp);
 	
-	bpair_parser(bs->arch, toki, pe_arches, sizeof pe_arches / sizeof(bpr), "arch");
+	bpair_parser(ibuffer[buffer_pos], toki, pe_arches, sizeof pe_arches / sizeof(bpr), "arch");
 	
-	add_label("Arch", bs->arch);
+	add_label("Arch", ibuffer[buffer_pos++]);
 }

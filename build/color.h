@@ -54,3 +54,6 @@ static const tcolor yellow =
 	244,
 	52
 };
+
+void set_color(const tcolor c);
+void set_blank(void);
