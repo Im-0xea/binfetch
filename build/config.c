@@ -56,7 +56,7 @@ int parse_cfg(const char * path)
 	char tok[128];
 	while (fgets(tok, 128, fp))
 	{
-		if (!strncmp("FLAG_COLORS", tok, 6))
+		if (!strncmp("[art_colors]", tok, 6))
 		{
 			while (fgets(tok, 128, fp))
 			{
@@ -68,7 +68,7 @@ int parse_cfg(const char * path)
 				++flag_max_colors;
 			}
 		}
-		if (!strncmp("MAIN_COLORS", tok, 6))
+		if (!strncmp("[label_colors]", tok, 6))
 		{
 			while (fgets(tok, 128, fp))
 			{
@@ -80,7 +80,7 @@ int parse_cfg(const char * path)
 				++main_max_colors;
 			}
 		}
-		if (!strncmp("VALUES", tok, 6))
+		if (!strncmp("[order]", tok, 6))
 		{
 			while (fgets(tok, 128, fp))
 			{

@@ -1,8 +1,14 @@
 PREFIX = /usr
-CONFIG = /tmp
+
+CC = gcc
+STRIP = strip
 
 CFLAGS = -Os -Wall
-LDFLAGS = -lssl -lcrypto -flto
+LDFLAGS = -flto
+
+LIBS = -lcrypto -lssl
+
+PROGRAM = binfetch
 
 IB_HEADERS = $(wildcard *.h.ib)
 IB_CFILES  = $(wildcard *.c.ib)
@@ -10,27 +16,32 @@ HEADERS = $(patsubst %.h.ib, build/%.h, $(IB_HEADERS))
 OBJS = $(patsubst %.c.ib, build/%.o, $(IB_CFILES))
 CFILES = $(patsubst %.c.ib, build/%.c, $(IB_CFILES))
 
-all: binfetch
+all: $(PROGRAM)
 
 build/%.h: %.h.ib
-	ib $< -o $@
+	@echo " IB      $<"
+	@ib $< -o $@
 
 build/%.c: %.c.ib
-	ib $< -o $@
+	@echo " IB      $<"
+	@ib $< -o $@
 
 build/%.o: build/%.c
-	gcc $< $(CFLAGS) -I build -D CONFIG="$(CONFIG)" -c -o $@ 
+	@echo " CC      $<"
+	@$(CC) $< $(CFLAGS) -I build -c -o $@ 
 
-binfetch: $(HEADERS) $(CFILES) $(OBJS)
-	gcc $(LDFLAGS) $(OBJS) -o binfetch
+$(PROGRAM): $(HEADERS) $(CFILES) $(OBJS)
+	@echo " LD      $(PROGRAM)"
+	@$(CC) $(LDFLAGS) $(LIBS) $(OBJS) -o $(PROGRAM)
+	@echo " STRIP   $<"
+	@$(STRIP) $(PROGRAM)
 
-bootstrap: binfetch
-	strip binfetch
+bootstrap: $(PROGRAM)
 
 clean:
-	rm -f build/*.h build/*.o build/*.c binfetch
+	@echo " CLEAN"
+	@rm -f build/*.h build/*.o build/*.c $(PROGRAM)
 
-install:
-	mkdir -p ${CONFIG}
-	cp cfg/binfetch.cfg ${CONFIG}
-	cp binfetch ${PREFIX}/bin/binfetch
+install: $(PROGRAM)
+	@echo " INSTALL $(PROGRAM)"
+	@cp $(PROGRAM) ${PREFIX}/bin/

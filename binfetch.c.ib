@@ -35,13 +35,9 @@ int main_max_colors = 0
 extern void elf_parser(FILE * fp)
 extern void mach_parser(FILE * fp, int bit, int end)
 extern void pe_parser(FILE * fp)
+extern void mz_parser(FILE * fp)
+extern void sh_parser(FILE * fp)
 extern void checksum_art(FILE * fp)
-
-void set_color(const tcolor c)
-	printf("\033[38;2;%d;%d;%dm", c.r, c.g, c.b)
-
-void set_blank(void)
-	printf("\033[0m")
 
 void print_label(const char * label)
 	if (ascii_art[current_line][0] != '\0')
