@@ -56,10 +56,10 @@ static int clamp(int min, int max, int in)
 	return in < min ? min : in > max ? max : in
 
 void drunken_bishop(FILE * fp)
-	const int w = 20
+	const int w = 18
 	const int h = 10
 	const int it = 200
-	const char set[] = " .o+=*B0X@%&#/^"
+	const char set[] = " .o+=*B0X@%&#/^SE"
 	
 	fseek(fp, 0L, SEEK_END)
 	long file_size = ftell(fp)
@@ -104,6 +104,6 @@ void drunken_bishop(FILE * fp)
 	max_height = h
 	for (y = 0; y < h; ++y)
 		for (x = 0; x < w; ++x)
-			ascii_art[y][x] = set[clamp(0, 14, map[y][x])]
+			ascii_art[y][x] = set[clamp(0, 16, map[y][x])]
 	
 	return
