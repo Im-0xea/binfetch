@@ -79,7 +79,7 @@ int fetch(char * path)
 		bzero(ascii_art[i], 64);
 	}
 	
-	checksum_art(fp);
+	drunken_bishop(fp);
 	
 	strcpy(ibuffer[buffer_pos], basename(path));
 	add_label("Name", ibuffer[buffer_pos++]);

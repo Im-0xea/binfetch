@@ -6,6 +6,9 @@
 #include "pair.h"
 #include "color.h"
 
+int parse_cfg(const char * path);
+int fetch(char * path);
+
 int main(int argc, char **argv)
 {
 	if (argc < 2)
