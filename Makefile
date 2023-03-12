@@ -57,4 +57,5 @@ install: $(PROGRAM)
 	@mkdir -p ${PREFIX}/bin/
 	@cp $(PROGRAM) ${PREFIX}/bin/
 	@echo " INSTALL binfetch.cfg"
+	@mkdir -p ${CONFIG}/
 	@cp cfg/binfetch.cfg $(CONFIG)/
