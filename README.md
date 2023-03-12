@@ -6,8 +6,15 @@ A neofetch inspired fetching utility for executables, written in C
 
 ### Build
 
+#### Depends on:
+
+- zlib
+- [ib](https://github.com/Nik-Nothing/ibranching)
+
+if you are too lazy to install ib run 'make bootstrap' instead of 'make'
+
 ~~~
-$ make bootstrap CONFIG=<config folder of choice, I suggest $HOME/.config/binfetch> 
+$ make CONFIG=<config folder of choice, I suggest $HOME/.config/binfetch> 
 ~~~
 ~~~
 $ (root) make install CONFIG=<config>
