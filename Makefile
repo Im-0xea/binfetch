@@ -9,7 +9,7 @@ CC = gcc
 LD = gcc
 STRIP = strip
 
-CFLAGS = -Os -Wall -DCONFIG=\"$(CONFIG)/binfetch.cfg\"
+CFLAGS = -Os -Wall
 LDFLAGS = -flto
 
 LIBS = -lz
