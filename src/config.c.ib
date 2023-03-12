@@ -22,11 +22,11 @@ int parse_cfg(const char * path)
 		while (1)
 			char path[128]
 			// add what ever paths you want
-			strcpy(path, CONFIG)
-			if ((fp = fopen(path, "r")))
-				break
 			strcpy(path, getenv("HOME"))
 			strcat(path, "/.config/binfetch/binfetch.cfg")
+			if ((fp = fopen(path, "r")))
+				break
+			strcpy(path, "/usr/share/binfetch/binfetch.cfg")
 			if ((fp = fopen(path, "r")))
 				break
 			printf("failed to open standard config\n")
