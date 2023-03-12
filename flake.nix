@@ -14,12 +14,16 @@
   } @ inputs:
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
+      lib = nixpkgs.lib;
     in {
       # Executed by `nix build`
       packages = rec {
         binfetch = pkgs.stdenv.mkDerivation {
           name = "binfetch";
-          src = ./src;
+          src = lib.cleanSourceWith {
+            filter = name: type: !(lib.hasSuffix ".nix" (baseNameOf (toString name)));
+            src = lib.cleanSource ./.;
+          };
           buildInputs = with pkgs; [zlib openssl];
           # TODO make custom config possible
           # optimally by loading $XDG_CONFIG_HOME ($HOME/.config as fallback)
