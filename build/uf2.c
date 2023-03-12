@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+#include "info.h"
+#include "pair.h"
+#include "bin_op.h"
+
+extern char ibuffer[128][128];
+extern int  buffer_pos;
+
+void uf2_parser(FILE * fp)
+{
+	return;
+}
