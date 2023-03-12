@@ -56,7 +56,6 @@ int main(int argc, char **argv)
 	if (parse_cfg(config))
 		return 1
 	
-	
 	for(; optind < argc; optind++)
 		fetch(argv[optind])
 	
