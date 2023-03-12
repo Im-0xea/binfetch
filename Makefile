@@ -1,5 +1,5 @@
 PREFIX = /usr
-CONFIG = /tmp
+CONFIG = /usr/share/binfetch
 
 SRC = ./src
 DEST = ./build
