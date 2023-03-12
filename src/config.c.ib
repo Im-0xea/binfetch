@@ -6,7 +6,7 @@
 #include "color.h"
 
 #ifndef CONFIG
-	#define CONFIG /tmp
+	#define CONFIG "/tmp"
 
 extern tcolor ascii_cols[128]
 extern tcolor main_cols[128]
@@ -21,13 +21,12 @@ int parse_cfg(const char * path)
 	if (path[0] == '\0')
 		while (1)
 			char path[128]
-			strcpy(path, getenv("HOME"))
-			strcat(path, "/.config/binfetch/binfetch.cfg")
+			// add what ever paths you want
+			strcpy(path, CONFIG)
 			if ((fp = fopen(path, "r")))
 				break
-			// add what ever paths you want
 			strcpy(path, getenv("HOME"))
-			strcat(path, "CONFIG")
+			strcat(path, "/.config/binfetch/binfetch.cfg")
 			if ((fp = fopen(path, "r")))
 				break
 			printf("failed to open standard config\n")
