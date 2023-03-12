@@ -1,6 +1,6 @@
 # Binfetch
 
-A neofetch inspired fetching utility for executables, written in C
+A neofetch inspired fetching utility for executables, written in [ib](https://github.com/Nik-Nothing/ibranching) C
 
 ![image](https://socki.moe/binfetch.png "img")
 
