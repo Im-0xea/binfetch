@@ -1,4 +1,5 @@
 PREFIX = /usr
+CONFIG = /tmp
 
 SRC = ./src
 DEST = ./build
@@ -11,7 +12,7 @@ STRIP = strip
 CFLAGS = -Os -Wall
 LDFLAGS = -flto
 
-LIBS = -lz -lssl -lcrypto
+LIBS = -lz
 
 PROGRAM = binfetch
 
@@ -54,3 +55,5 @@ clean:
 install: $(PROGRAM)
 	@echo " INSTALL $(PROGRAM)"
 	@cp $(PROGRAM) ${PREFIX}/bin/
+	@echo " INSTALL binfetch.cfg"
+	@cp cfg/binfetch.cfg $(CONFIG)/

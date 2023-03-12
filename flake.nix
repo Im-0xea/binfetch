@@ -24,7 +24,7 @@
             filter = name: type: !(lib.hasSuffix ".nix" (baseNameOf (toString name)));
             src = lib.cleanSource ./.;
           };
-          buildInputs = with pkgs; [zlib openssl];
+          buildInputs = with pkgs; [zlib];
           # TODO make custom config possible
           # optimally by loading $XDG_CONFIG_HOME ($HOME/.config as fallback)
           # and $XDG_CONFIG_DIRS (/etc/xdg as fallback)
