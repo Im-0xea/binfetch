@@ -54,6 +54,7 @@ check_ib:
 		echo "ib is not installed or not executable, either install ib from my repo, or run 'make bootstrap'"; \
 		exit 1; \
 	fi
+	mkdir -p build
 
 clean:
 	@echo " CLEAN"
