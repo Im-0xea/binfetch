@@ -37,7 +37,6 @@ extern void mach_parser(FILE * fp, int bit, int end);
 extern void pe_parser(FILE * fp);
 extern void mz_parser(FILE * fp);
 extern void sh_parser(FILE * fp);
-extern void checksum_art(FILE * fp);
 
 void print_label(const char * label)
 {
