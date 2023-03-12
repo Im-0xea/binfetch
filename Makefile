@@ -3,10 +3,10 @@ PREFIX = /usr
 CC = gcc
 STRIP = strip
 
-CFLAGS = -Os -Wall
+CFLAGS = -O0 -g -Wall
 LDFLAGS = -flto
 
-LIBS = -lcrypto -lssl
+LIBS = -lcrypto -lssl -lz
 
 PROGRAM = binfetch
 
@@ -34,7 +34,7 @@ $(PROGRAM): $(HEADERS) $(CFILES) $(OBJS)
 	@echo " LD      $(PROGRAM)"
 	@$(CC) $(LDFLAGS) $(LIBS) $(OBJS) -o $(PROGRAM)
 	@echo " STRIP   $<"
-	@$(STRIP) $(PROGRAM)
+	#@$(STRIP) $(PROGRAM)
 
 bootstrap: $(PROGRAM)
 
