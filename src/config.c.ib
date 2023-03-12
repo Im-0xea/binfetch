@@ -18,7 +18,7 @@ extern int main_max_colors
 
 int parse_cfg(const char * path)
 	FILE * fp
-	if (path[0] == '\0')
+	if (path == NULL)
 		while (1)
 			char path[128]
 			// add what ever paths you want
@@ -59,4 +59,5 @@ int parse_cfg(const char * path)
 				tok[strlen(tok) - 1] = '\0'
 				strcpy(label_order[label_order_count++], tok + 1) 
 	
+	fclose(fp)
 	return 0
