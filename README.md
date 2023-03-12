@@ -20,10 +20,10 @@ A neofetch inspired fetching utility for executables, written in [ib](https://gi
 if you are too lazy to install ib run 'make bootstrap' instead of 'make'
 
 ~~~
-$ make CONFIG=<config folder of choice, I suggest $HOME/.config/binfetch> 
+$ make (bootstrap)
 ~~~
 ~~~
-$ (root) make install CONFIG=<config>
+$ (root) make install
 ~~~
 
 ### Configuration
