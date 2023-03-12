@@ -6,8 +6,9 @@ A neofetch inspired fetching utility for executables, written in C
 
 ### Packages
 
-- gentoo  https://github.com/Nik-Nothing/niki-gentoo
-- nix  this flake
+- gentoo https://github.com/Nik-Nothing/niki-gentoo
+
+- nix this flake
 
 ### Build
 
