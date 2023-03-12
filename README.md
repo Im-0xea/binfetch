@@ -4,6 +4,11 @@ A neofetch inspired fetching utility for executables, written in C
 
 ![image](https://socki.moe/binfetch.png "img")
 
+### Packages
+
+- gentoo -https://github.com/Nik-Nothing/niki-gentoo
+- nix - this flake
+
 ### Build
 
 #### Depends on:
