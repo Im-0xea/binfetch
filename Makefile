@@ -1,6 +1,7 @@
 PREFIX = /usr
 
 CC = gcc
+IB = ib
 STRIP = strip
 
 CFLAGS = -O0 -g -Wall
@@ -20,11 +21,11 @@ all: $(PROGRAM)
 
 build/%.h: %.h.ib
 	@echo " IB      $<"
-	@ib $< -o $@
+	@$(IB) $< -o $@
 
 build/%.c: %.c.ib
 	@echo " IB      $<"
-	@ib $< -o $@
+	@$(IB) $< -o $@
 
 build/%.o: build/%.c
 	@echo " CC      $<"
@@ -36,7 +37,11 @@ $(PROGRAM): $(HEADERS) $(CFILES) $(OBJS)
 	@echo " STRIP   $<"
 	#@$(STRIP) $(PROGRAM)
 
-bootstrap: $(PROGRAM)
+build_ib:
+	gcc ib/ib.c -o ib_strap
+	$(eval IB = ./ib_strap)
+
+bootstrap: build_ib $(PROGRAM)
 
 clean:
 	@echo " CLEAN"
