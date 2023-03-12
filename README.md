@@ -6,14 +6,14 @@ A neofetch inspired fetching utility for executables, written in [ib](https://gi
 
 ### Packages
 
-- gentoo https://github.com/Nik-Nothing/niki-gentoo
-
-- nix this flake
+- gentoo [my ebuild repo](https://github.com/Nik-Nothing/niki-gentoo)
+- nix [this repo is a flake](https://github.com/Nik-Nothing/binfetch)
 
 ### Build
 
 #### Depends on:
 
+- libc (manic laughter)
 - zlib
 - [ib](https://github.com/Nik-Nothing/ibranching)
 
