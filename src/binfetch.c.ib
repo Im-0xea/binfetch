@@ -39,6 +39,8 @@ extern void mz_parser(FILE * fp)
 extern void uf2_parser(FILE * fp)
 extern void sh_parser(FILE * fp)
 
+extern void drunken_bishop(FILE * fp)
+
 void print_label(const char * label)
 	if (ascii_art[current_line][0] != '\0')
 		set_color(ascii_cols[(int) ((float) current_line / (float) (max_height) * (float) flag_max_colors)])
