@@ -1,9 +1,0 @@
-typedef struct label_s
-{
-	char   key[128];
-	char * out;
-	bool   used;
-}
-label;
-
-extern void add_label(char * name, char * out);
