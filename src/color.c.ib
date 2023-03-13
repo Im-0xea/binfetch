@@ -7,4 +7,3 @@ void set_color(const tcolor c)
 
 void set_blank(void)
 	printf("\033[0m")
-

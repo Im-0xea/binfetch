@@ -11,26 +11,27 @@ extern int max_colors
 static int clamp(int min, int max, int in)
 	return in < min ? min : in > max ? max : in
 
+#define CHUNK_SIZE 1024
+
+unsigned int get_checksum(FILE * fp)
+	unsigned int sum = crc32(0L, Z_NULL, 0)
+	char buffer[CHUNK_SIZE]
+	
+	size_t x
+	while ((x = fread(buffer, 1, CHUNK_SIZE, fp)) > 0)
+		sum = crc32(sum, buffer, x)
+	
+	rewind(fp)
+	
+	return sum
+
 void drunken_bishop(FILE * fp)
 	const int w = 18
 	const int h = 10
 	const int it = 200
 	const char set[] = " .o+=*B0X@%&#/^SE"
 	
-	fseek(fp, 0L, SEEK_END)
-	long file_size = ftell(fp)
-	fseek(fp, 0L, SEEK_SET)
-	char* file_data = (char*)malloc(file_size)
-	if (!fread(file_data, 1, file_size, fp))
-		perror("failed to checksum file")
-		exit(1)
-	unsigned long in = crc32(0L, Z_NULL, 0)
-	in = crc32(in, (const Bytef*)file_data, file_size)
-	free(file_data)
-	rewind(fp)
-	
-	srand(in)
-	
+	srand(get_checksum(fp))
 	
 	int map[256][256]
 	for (int bz = 0; bz < h; ++bz)

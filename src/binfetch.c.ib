@@ -62,9 +62,7 @@ int fetch(char * path)
 	FILE * fp = fopen(path, "rb")
 	
 	if (!fp)
-		set_color(red)
-		printf("failed to open %s\n", path)
-		set_blank()
+		perror("failed to open binary")
 		return 1
 	
 	label_count = 0
@@ -87,20 +85,24 @@ int fetch(char * path)
 	if (tok == 0x464c457f)
 		strcpy(ibuffer[buffer_pos], "ELF\0")
 		add_label("Header", ibuffer[buffer_pos++])
+		
 		elf_parser(fp)
 	else if (tok == 0xfeedfacf || tok == 0xfeedfacf || tok == 0xcefaedfe || tok == 0xcffaedfe)
 		strcpy(ibuffer[buffer_pos], "MACH-O")
 		add_label("Header", ibuffer[buffer_pos++])
+		
 		int cond = tok >> 24 != 0xfe
 		mach_parser(fp, cond, !cond ? tok << 24 == 0xce ? 0 : 1 : tok >> 24 == 0xce ? 0 : 1)
 	else if (tok == 0xbebafeca)
 		char *extension = &path[strlen(path)-6]
+		
 		if (strcmp(".class", extension) == 0)
 			strcpy(ibuffer[buffer_pos], "Java Class")
 			add_label("Header", ibuffer[buffer_pos++])
 		else
 			strcpy(ibuffer[buffer_pos], "Universal Binary")
 			add_label("Header", ibuffer[buffer_pos++])
+			
 			mach_universal_parser(fp)
 	else if (tok == 0xfa405a4d)
 		strcpy(ibuffer[buffer_pos], "COMPRESSED BIN")
@@ -112,26 +114,34 @@ int fetch(char * path)
 			rewind(fp)
 			strcpy(ibuffer[buffer_pos], "MZ")
 			add_label("Header", ibuffer[buffer_pos++])
+			
 			mz_parser(fp)
 		else
 			strcpy(ibuffer[buffer_pos], "PE")
 			add_label("Header", ibuffer[buffer_pos++])
+			
 			pe_parser(fp)
 	else if (tok == 0x0a324655)
 		strcpy(ibuffer[buffer_pos], "UF2")
 		add_label("Header", ibuffer[buffer_pos++])
+		
 		uf2_parser(fp)
 	else if ((tok & 0xffff) == 0x2123)
 		strcpy(ibuffer[buffer_pos], "Script")
 		add_label("Header", ibuffer[buffer_pos++])
+		
 		sh_parser(fp)
 	else
 		sprintf(ibuffer[buffer_pos], "unknown 0x%x", tok)
 		add_label("Header", ibuffer[buffer_pos++])
 	
-	struct stat st
-	stat(path, &st)
-	get_size(ibuffer[buffer_pos], st.st_size)
+	fseek(fp, 0L, SEEK_END)
+	size_t sz = ftell(fp)
+	if (fclose(fp))
+		perror("failed to close binary")
+		exit(1)
+	
+	get_size(ibuffer[buffer_pos], sz)
 	add_label("Size", ibuffer[buffer_pos++])
 	
 	for (int x = 0; x < label_order_count; x++)
@@ -151,6 +161,7 @@ int fetch(char * path)
 			set_color(ascii_cols[(int) ((float) (current_line) / (float) max_height * (float) flag_max_colors)])
 			printf("%s\n", ascii_art[current_line])
 			set_blank()
+	
 	printf("\n")
 	
-	return fclose(fp)
+	return 0
