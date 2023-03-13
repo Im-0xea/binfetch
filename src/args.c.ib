@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 			case 'c':
 				config = optarg
 				break
-			default:
+			default: //
 	
 	if (optind >= argc)
 		fprintf(stderr, "Expected argument after options\n")
