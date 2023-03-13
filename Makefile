@@ -1,5 +1,9 @@
+OS_UNAME = $(shell uname)
+
 PREFIX = /usr
-CONFIG = /usr/share/binfetch
+ifeq ($(OS_UNAME), Darwin)
+	PREFIX := /usr/local
+endif
 
 SRC = ./src
 DEST = ./build
@@ -66,5 +70,5 @@ install: $(PROGRAM)
 	@mkdir -p ${PREFIX}/bin/
 	@cp $(PROGRAM) ${PREFIX}/bin/
 	@echo " INSTALL *.cfg"
-	@mkdir -p ${CONFIG}/
-	@cp cfg/* $(CONFIG)/
+	@mkdir -p ${PREFIX}/share/binfetch
+	@cp cfg/* $(PREFIX)/share/binfetch

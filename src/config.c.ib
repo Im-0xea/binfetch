@@ -29,6 +29,9 @@ int parse_cfg(const char * path)
 			strcpy(path, "/usr/share/binfetch/binfetch.cfg")
 			if ((fp = fopen(path, "r")))
 				break
+			strcpy(path, "/usr/local/share/binfetch/binfetch.cfg")
+			if ((fp = fopen(path, "r")))
+				break
 			printf("failed to open standard config\n")
 			return 1
 		
