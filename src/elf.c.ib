@@ -110,5 +110,9 @@ void elf_parser(FILE * fp)
 	advance(tbyte, 4, fp)
 	
 	sprintf(ibuffer[buffer_pos], "%s (size 0x%02x entries %d)", pgm_table, tbyte[0] , tbyte[1])
-	
 	add_label("Pgm Table", ibuffer[buffer_pos++])
+	advance(tbyte, 4, fp)
+	
+	sprintf(ibuffer[buffer_pos], "%s (size 0x%02x entries %d)", sec_table, tbyte[0] , tbyte[1])
+	add_label("Sec Table", ibuffer[buffer_pos++])
+	
