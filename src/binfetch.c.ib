@@ -38,6 +38,7 @@ extern void pe_parser(FILE * fp)
 extern void mz_parser(FILE * fp)
 extern void uf2_parser(FILE * fp)
 extern void sh_parser(FILE * fp)
+extern void mach_universal_parser(FILE * fp)
 
 extern void drunken_bishop(FILE * fp)
 
@@ -88,6 +89,15 @@ int fetch(char * path)
 		add_label("Header", ibuffer[buffer_pos++])
 		int cond = tok >> 24 != 0xfe
 		mach_parser(fp, cond, !cond ? tok << 24 == 0xce ? 0 : 1 : tok >> 24 == 0xce ? 0 : 1)
+	else if (tok == 0xbebafeca)
+		char *extension = &path[strlen(path)-6]
+		if (strcmp(".class", extension) == 0)
+			strcpy(ibuffer[buffer_pos], "Java Class")
+			add_label("Header", ibuffer[buffer_pos++])
+		else
+			strcpy(ibuffer[buffer_pos], "MACH-O (Universal)")
+			add_label("Header", ibuffer[buffer_pos++])
+			mach_universal_parser(fp)
 	else if (tok == 0xfa405a4d)
 		strcpy(ibuffer[buffer_pos], "COMPRESSED BIN")
 		add_label("Header", ibuffer[buffer_pos++])
@@ -111,9 +121,6 @@ int fetch(char * path)
 		strcpy(ibuffer[buffer_pos], "Script")
 		add_label("Header", ibuffer[buffer_pos++])
 		sh_parser(fp)
-	else if (tok == 0xbebafeca)
-		strcpy(ibuffer[buffer_pos], "Java Class")
-		add_label("Header", ibuffer[buffer_pos++])
 	else
 		sprintf(ibuffer[buffer_pos], "unknown 0x%x", tok)
 		add_label("Header", ibuffer[buffer_pos++])
