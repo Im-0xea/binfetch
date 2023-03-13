@@ -843,13 +843,15 @@ static amode short_arg_parser(const char *arg)
 			
 			case 'V': version();
 			
-			default :
+			default:
+			{
 				char invalid[1];
 				invalid[0] = arg[i];
 				
 				warn("invalid option", invalid, 0);
 				
 				return nothing;
+			}
 		}
 		i++;
 	}
@@ -863,6 +865,7 @@ static amode arg_parser(char *arg, const amode last)
 		switch (last)
 		{
 			case space:
+			{
 				const int sp = atoi(arg);
 				
 				if (!sp || sp > 128) error("invalid amount of spaces", arg, 1, 0);
@@ -870,6 +873,7 @@ static amode arg_parser(char *arg, const amode last)
 				spaces       = sp;
 				
 				return nothing;
+			}
 			case soutput:
 				overwrite_out  = arg;
 				return nothing;
