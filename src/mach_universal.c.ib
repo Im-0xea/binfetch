@@ -7,7 +7,7 @@
 #include "pair.h"
 #include "bin_op.h"
 
-#include "mach_universal_arch.h"
+#include "mach_arch.h"
 
 extern char ibuffer[128][128]
 extern int  buffer_pos
@@ -29,11 +29,11 @@ void mach_universal_parser(FILE * fp)
 			advance(&toki, 4, fp)
 		advance(&toki, 4, fp)
 		char *buf = malloc(12)
-		bpair_parser(buf, toki, mach_universal_arches, sizeof mach_universal_arches / sizeof(bpr), "cpu type")
+		bpair_parser(buf, toki, mach_arches, sizeof mach_arches / sizeof(bpr), "cpu type")
 		strcat(arches, buf)
 		if (i != bin_count-1)
 			strcat(arches, ", ")
 		free(buf)
 	strcpy(ibuffer[buffer_pos], arches)
-	add_label("Architectures", ibuffer[buffer_pos++])
+	add_label("Arches", ibuffer[buffer_pos++])
 	free(arches)
