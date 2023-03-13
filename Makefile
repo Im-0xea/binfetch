@@ -10,7 +10,7 @@ LD = gcc
 STRIP = strip
 
 CFLAGS = -Os -Wall -DPREFIX=\"$(PREFIX)\"
-LDFLAGS = -flto
+LDFLAGS = -flto -lm
 
 LIBS = -lz
 
