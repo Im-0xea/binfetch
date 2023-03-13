@@ -22,7 +22,7 @@ HEADERS = $(patsubst $(SRC)/%.h.ib, $(DEST)/%.h, $(IB_HEADERS))
 OBJS = $(patsubst $(SRC)/%.c.ib, $(DEST)/%.o, $(IB_CFILES))
 CFILES = $(patsubst $(SRC)/%.c.ib, $(DEST)/%.c, $(IB_CFILES))
 
-all: check_ib $(PROGRAM)
+all: $(DEST) check_ib $(PROGRAM)
 
 $(DEST)/%.h: $(SRC)/%.h.ib
 	@echo " IB      $<"
@@ -42,12 +42,14 @@ $(PROGRAM): $(HEADERS) $(CFILES) $(OBJS)
 	@echo " STRIP   $(PROGRAM)"
 	@$(STRIP) $(PROGRAM)
 
-bootstrap: build_ib $(PROGRAM)
+bootstrap: $(DEST) build_ib $(PROGRAM)
+
+$(DEST):
+	mkdir -p $(DEST)
 
 build_ib:
 	gcc $(SRC)/ib/ib.c -o ib_strap
 	$(eval IB = ./ib_strap)
-	mkdir -p $(DEST)
 
 check_ib:
 	@which ib > /dev/null 2>&1; \
@@ -55,7 +57,6 @@ check_ib:
 		echo "ib is not installed or not executable, either install ib from my repo, or run 'make bootstrap'"; \
 		exit 1; \
 	fi
-	@mkdir -p $(DEST)
 
 clean:
 	@echo " CLEAN"
