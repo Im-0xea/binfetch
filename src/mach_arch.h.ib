@@ -1,4 +1,4 @@
-static const bpr mach_arches[] =
+const bpr mach_arches[] =
 		.key = 0x00000007
 		.str = "i386"
 	

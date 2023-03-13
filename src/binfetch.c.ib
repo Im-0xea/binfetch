@@ -36,7 +36,7 @@ int flag_max_colors = 0
 int main_max_colors = 0
 
 extern void elf_parser(FILE * fp)
-extern void mach_parser(FILE * fp, int bit, int end)
+extern void mach_parser(FILE * fp, fbyte mag)
 extern void pe_parser(FILE * fp)
 extern void mz_parser(FILE * fp)
 extern void uf2_parser(FILE * fp)
@@ -91,8 +91,7 @@ int fetch(char * path)
 		strcpy(ibuffer[buffer_pos], "MACH-O")
 		add_label("Header", ibuffer[buffer_pos++])
 		
-		int cond = tok >> 24 != 0xfe
-		mach_parser(fp, cond, !cond ? tok << 24 == 0xce ? 0 : 1 : tok >> 24 == 0xce ? 0 : 1)
+		mach_parser(fp, tok)
 	else if (tok == 0xbebafeca)
 		char *extension = &path[strlen(path)-6]
 		
