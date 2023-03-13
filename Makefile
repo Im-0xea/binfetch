@@ -1,9 +1,5 @@
-OS_UNAME = $(shell uname)
-
-PREFIX = /usr
-ifeq ($(OS_UNAME), Darwin)
-	PREFIX := /usr/local
-endif
+DESTDIR= /
+PREFIX = /usr/local
 
 SRC = ./src
 DEST = ./build
@@ -13,7 +9,7 @@ CC = gcc
 LD = gcc
 STRIP = strip
 
-CFLAGS = -Os -Wall
+CFLAGS = -Os -Wall -DPREFIX=\"$(PREFIX)\"
 LDFLAGS = -flto
 
 LIBS = -lz
@@ -67,8 +63,8 @@ clean:
 
 install: $(PROGRAM)
 	@echo " INSTALL $(PROGRAM)"
-	@mkdir -p ${PREFIX}/bin/
-	@cp $(PROGRAM) ${PREFIX}/bin/
+	@mkdir -p $(DESTDIR)/${PREFIX}/bin/
+	@cp $(PROGRAM) $(DESTDIR)/${PREFIX}/bin/
 	@echo " INSTALL *.cfg"
-	@mkdir -p ${PREFIX}/share/binfetch
-	@cp cfg/* $(PREFIX)/share/binfetch
+	@mkdir -p $(DESTDIR)/${PREFIX}/share/binfetch
+	@cp cfg/* $(DESTDIR)/$(PREFIX)/share/binfetch

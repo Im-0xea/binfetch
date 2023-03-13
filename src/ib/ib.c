@@ -844,14 +844,12 @@ static amode short_arg_parser(const char *arg)
 			case 'V': version();
 			
 			default:
-			{
 				char invalid[1];
 				invalid[0] = arg[i];
 				
 				warn("invalid option", invalid, 0);
 				
 				return nothing;
-			}
 		}
 		i++;
 	}

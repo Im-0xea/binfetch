@@ -5,8 +5,8 @@
 #include "pair.h"
 #include "color.h"
 
-#ifndef CONFIG
-	#define CONFIG "/tmp"
+#ifndef PREFIX
+	#define PREFIX "/tmp"
 
 extern tcolor ascii_cols[128]
 extern tcolor main_cols[128]
@@ -26,10 +26,8 @@ int parse_cfg(const char * path)
 			strcat(path, "/.config/binfetch/binfetch.cfg")
 			if ((fp = fopen(path, "r")))
 				break
-			strcpy(path, "/usr/share/binfetch/binfetch.cfg")
-			if ((fp = fopen(path, "r")))
-				break
-			strcpy(path, "/usr/local/share/binfetch/binfetch.cfg")
+			strcpy(path, PREFIX)
+			strcat(path, "/share/binfetch/binfetch.cfg")
 			if ((fp = fopen(path, "r")))
 				break
 			printf("failed to open standard config\n")
