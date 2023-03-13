@@ -6,10 +6,12 @@
 
 #include "pair.h"
 
-void address_parser(char * out, byte *tok, const int bits)
+void address_parser(char * out, byte *tok, int bits)
 	strcpy(out, "0x")
 	signed long b = bits == 1 ? 4 : 8
-	while (--b >= 0 &&tok[b])
+	while (--b >= 0)
+		if (!tok[b])
+			continue
 		char bit[3]
 		sprintf(bit, "%02x", tok[b])
 		strcat(out, bit)
