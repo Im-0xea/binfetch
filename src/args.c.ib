@@ -48,6 +48,7 @@ int main(int argc, char **argv)
 				config = optarg
 				break
 			default:
+				break
 	
 	if (optind >= argc)
 		fprintf(stderr, "Expected argument after options\n")
