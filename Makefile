@@ -48,7 +48,7 @@ $(DEST):
 	mkdir -p $(DEST)
 
 build_ib:
-	gcc $(SRC)/ib/ib.c -o ib_strap
+	$(CC) $(SRC)/ib/ib.c -o ib_strap
 	$(eval IB = ./ib_strap)
 
 check_ib:
