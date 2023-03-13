@@ -16,10 +16,12 @@
 #include "bin_op.h"
 
 char ascii_art  [128][128]
-char ibuffer[128][128]
-int  buffer_pos = 0
+
 tcolor ascii_cols[128]
 tcolor main_cols[128]
+
+char ibuffer[128][128]
+int  buffer_pos = 0
 
 int   label_count
 label labels[128]

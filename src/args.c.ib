@@ -6,17 +6,13 @@
 #include "pair.h"
 #include "color.h"
 
-int parse_cfg(const char * path)
+#define VERSION 0.1
+
+void parse_cfg(const char * path)
 int fetch(char * path)
 
 int main(int argc, char **argv)
-	if (argc < 2)
-		set_color(red)
-		printf("you did not provide a binary\n")
-		set_blank()
-		return 1
-	
-	const char * short_options = "hvc:"
+	const char * short_options = "hVc:"
 	const struct option long_options[] =
 			"help",    no_argument,       0, 'h'
 		
@@ -34,7 +30,9 @@ int main(int argc, char **argv)
 			break
 		
 		switch (opt)
+			default:
 			case '?': // Unrecognized option
+				return 1
 			case 'h':
 				printf("Usage: binfetch [OPTION] [EXECUTABLES]\n\n" \
 				     " -h, --help    -> prints this\n" \
@@ -42,22 +40,21 @@ int main(int argc, char **argv)
 				     " -c, --config  -> set config file\n")
 				return 0
 			case 'V':
-				printf("v1")
+				printf("Binfetch Version %.1f\n", VERSION)
 				return 0
 			case 'c':
 				config = optarg
 				break
-			default:
-				break
 	
 	if (optind >= argc)
-		fprintf(stderr, "Expected argument after options\n")
-		exit(EXIT_FAILURE)
-	
-	if (parse_cfg(config))
+		set_color(red)
+		printf("you did not provide a binary\n")
+		set_blank()
 		return 1
 	
-	for(; optind < argc; optind++)
-		fetch(argv[optind])
+	parse_cfg(config)
+	
+	while (optind < argc)
+		fetch(argv[optind++])
 	
 	return 0
