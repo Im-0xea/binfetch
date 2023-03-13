@@ -47,7 +47,7 @@ bootstrap: build_ib $(PROGRAM)
 build_ib:
 	gcc $(SRC)/ib/ib.c -o ib_strap
 	$(eval IB = ./ib_strap)
-	mkdir -p build
+	mkdir -p $(DEST)
 
 check_ib:
 	@which ib > /dev/null 2>&1; \
@@ -55,7 +55,7 @@ check_ib:
 		echo "ib is not installed or not executable, either install ib from my repo, or run 'make bootstrap'"; \
 		exit 1; \
 	fi
-	mkdir -p build
+	@mkdir -p $(DEST)
 
 clean:
 	@echo " CLEAN"
