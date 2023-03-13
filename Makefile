@@ -47,6 +47,7 @@ bootstrap: build_ib $(PROGRAM)
 build_ib:
 	gcc $(SRC)/ib/ib.c -o ib_strap
 	$(eval IB = ./ib_strap)
+	mkdir -p build
 
 check_ib:
 	@which ib > /dev/null 2>&1; \
