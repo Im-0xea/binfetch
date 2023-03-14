@@ -15,6 +15,7 @@ extern int  buffer_pos
 void mach_universal_parser(FILE * fp)
 	byte tok[4]
 	int bin_count
+	fseek(fp, -4, SEEK_CUR)
 	advance(tok, 4, fp)
 	
 	bin_count = ((int)tok[3])
