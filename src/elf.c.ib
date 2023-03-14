@@ -127,9 +127,7 @@ void elf_parser(FILE * fp)
 			unstriped = 1
 	
 	if (unstriped)
-		strcpy(ibuffer[buffer_pos], "unstriped")
+		strcpy(ibuffer[buffer_pos], "unstripped")
 	else
-		strcpy(ibuffer[buffer_pos], "striped")
+		strcpy(ibuffer[buffer_pos], "stripped")
 	add_label("Striping", ibuffer[buffer_pos++])
-	
-	putc('\n', stdout)
