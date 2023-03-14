@@ -45,11 +45,41 @@ extern void mach_universal_parser(FILE * fp)
 
 extern void drunken_bishop(FILE * fp)
 
+typedef enum coloring
+	hor
+	ver
+	dia
+	val
+clr
+extern clr cclr
+
 void print_label(const char * label)
+	const char set[] = " .o+=*B0X@%&#/^SE"
 	if (ascii_art[current_line][0] != '\0')
-		set_color(ascii_cols[(int)floor((float) current_line / (float) (max_height) * (float) flag_max_colors)])
-		printf("%s  ", ascii_art[current_line])
-		set_blank()
+		int x = 0
+		while (ascii_art[current_line][x] != '\0')
+			switch (cclr)
+				case hor:
+					set_color(ascii_cols[(int)floor((float) current_line / (float) (max_height) * (float) flag_max_colors)])
+					break
+				case ver:
+					set_color(ascii_cols[(int)floor((float) x / (float) (max_width) * (float) flag_max_colors)])
+					break
+				case dia:
+					set_color(ascii_cols[(int)floor((float) (current_line + x) / (float) (max_width + max_height) * (float) flag_max_colors)])
+					break
+				case val:
+					int ckdi = 0
+					while (ckdi < 14)
+						if (ascii_art[current_line][x] == set[ckdi])
+							break
+						++ckdi
+					set_color(ascii_cols[(int)floor((float) ckdi / (float) 14 * (float) flag_max_colors)])
+					break
+			printf("%c", ascii_art[current_line][x])
+			set_blank()
+			x++
+		printf("  ")
 	else if (current_line != 0)
 		printf("%*s  ", max_width, " ")
 	set_color(main_cols[(int)floor((float) current_line / (float) (label_count) * (float) main_max_colors)])
