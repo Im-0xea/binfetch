@@ -1,0 +1,18 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
+
+#include "info.h"
+#include "pair.h"
+#include "bin_op.h"
+
+extern char ibuffer[128][128]
+extern int  buffer_pos
+
+void jvm_parser(FILE * fp, fbyte ver)
+	
+	sprintf(ibuffer[buffer_pos], "%d", ver)
+	add_label("Version", ibuffer[buffer_pos++])
+	
+	return

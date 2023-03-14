@@ -41,6 +41,7 @@ extern void pe_parser(FILE * fp)
 extern void mz_parser(FILE * fp)
 extern void uf2_parser(FILE * fp)
 extern void sh_parser(FILE * fp)
+extern void jvm_parser(FILE * fp, fbyte ver)
 extern void mach_universal_parser(FILE * fp)
 
 extern void drunken_bishop(FILE * fp)
@@ -123,11 +124,12 @@ void fetch(char * path)
 		
 		mach_parser(fp, tok)
 	else if (tok == 0xbebafeca)
-		char *extension = &path[strlen(path)-6]
-		
-		if (strcmp(".class", extension) == 0)
+		advance(&tok, 4, fp)
+		if (tok > 0x20)
 			strcpy(ibuffer[buffer_pos], "Java Class")
 			add_label("Header", ibuffer[buffer_pos++])
+			
+			jvm_parser(fp, tok)
 		else
 			strcpy(ibuffer[buffer_pos], "Universal Binary")
 			add_label("Header", ibuffer[buffer_pos++])
