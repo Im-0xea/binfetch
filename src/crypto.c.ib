@@ -15,7 +15,7 @@ static int clamp(int min, int max, int in)
 
 unsigned int get_checksum(FILE * fp)
 	unsigned int sum = crc32(0L, Z_NULL, 0)
-	char buffer[CHUNK_SIZE]
+	unsigned char buffer[CHUNK_SIZE]
 	
 	size_t x
 	while ((x = fread(buffer, 1, CHUNK_SIZE, fp)) > 0)

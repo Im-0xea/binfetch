@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "info.h"
 #include "pair.h"
@@ -89,15 +90,16 @@ void elf_parser(FILE * fp)
 	char pgm_table[128]
 	address_parser(pgm_table, tok, bits)
 	
-	advance(tok, bits == 1 ? 4 : 8, fp)
+	unsigned long shoff
+	advance(&shoff, bits == 1 ? 4 : 8, fp)
 	
 	char sec_table[128]
-	address_parser(sec_table, tok, bits)
+	address_parser(sec_table, &shoff, bits)
 	
 	advance(tok, 4, fp)
 	//do nothing its just same arch specific flags
 	
-	unsigned short tbyte[2]
+	unsigned short tbyte[3]
 	advance(tbyte, 2, fp)
 	
 	sprintf(ibuffer[buffer_pos], "0x%02x", tbyte[0])
@@ -108,7 +110,26 @@ void elf_parser(FILE * fp)
 	
 	sprintf(ibuffer[buffer_pos], "%s (size 0x%02x entries %d)", pgm_table, tbyte[0] , tbyte[1])
 	add_label("Pgm Table", ibuffer[buffer_pos++])
-	advance(tbyte, 4, fp)
+	advance(tbyte, 6, fp)
 	
-	sprintf(ibuffer[buffer_pos], "%s (size 0x%02x entries %d)", sec_table, tbyte[0] , tbyte[1])
+	sprintf(ibuffer[buffer_pos], "%s (size 0x%02x entries %d using %d)", sec_table, tbyte[0] , tbyte[1], tbyte[2])
 	add_label("Sec Table", ibuffer[buffer_pos++])
+	
+	
+	rewind(fp)
+	fseek(fp, shoff, SEEK_SET)
+	int current_sec = 0
+	int unstriped = 0
+	unsigned int sec[15]
+	for (; current_sec < tbyte[1]; ++current_sec)
+		advance(sec, tbyte[0], fp)
+		if (sec[1] == 0x2)
+			unstriped = 1
+	
+	if (unstriped)
+		strcpy(ibuffer[buffer_pos], "unstriped")
+	else
+		strcpy(ibuffer[buffer_pos], "striped")
+	add_label("Striping", ibuffer[buffer_pos++])
+	
+	putc('\n', stdout)

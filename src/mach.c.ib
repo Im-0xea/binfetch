@@ -13,7 +13,7 @@ extern char ibuffer[128][128]
 extern int  buffer_pos
 
 void mach_parser(FILE * fp, const fbyte mag)
-	const int bit = mag >> 24 != 0xfe
+	//const int bit = mag >> 24 != 0xfe
 	const int end = !mag ? mag << 24 == 0xce ? 0 : 1 : mag >> 24 == 0xce ? 0 : 1
 	
 	fbyte tok = 0
