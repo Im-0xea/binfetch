@@ -8,7 +8,7 @@ A neofetch inspired fetching utility for executables, written in [ib](https://gi
 
 - gentoo [my ebuild repo](https://github.com/Nik-Nothing/niki-gentoo)
 - nix [this repo is a flake](https://github.com/Nik-Nothing/binfetch)
-- arch [my pkgbuild repo](https://github.com/Nik-Nothing/niki-pacman)
+- arch [AUR](https://aur.archlinux.org/packages/binfetch-git) [my pkgbuild repo](https://github.com/Nik-Nothing/niki-pacman)
 
 ### Build
 
