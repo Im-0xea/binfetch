@@ -9,7 +9,7 @@
 #define VERSION 0.1
 
 void parse_cfg(const char * path)
-int fetch(char * path)
+void fetch(char * path)
 
 int main(int argc, char **argv)
 	const char * short_options = "hVc:"

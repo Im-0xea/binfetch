@@ -87,13 +87,13 @@ void print_label(const char * label)
 	set_blank()
 	current_line++
 
-int fetch(char * path)
+void fetch(char * path)
 	
 	FILE * fp = fopen(path, "rb")
 	
 	if (!fp)
 		perror("failed to open binary")
-		return 1
+		return
 	
 	label_count = 0
 	current_line = 0
@@ -137,7 +137,7 @@ int fetch(char * path)
 		strcpy(ibuffer[buffer_pos], "COMPRESSED BIN")
 		add_label("Header", ibuffer[buffer_pos++])
 	else if ((tok & 0x0000ffff) == 0x5a4d)
-		advance(&tok, 0xd8 - 4, fp)
+		fseek(fp, 0xd8 - 4, SEEK_SET)
 		advance(&tok, 4, fp)
 		if (tok != 0x5045)
 			rewind(fp)
@@ -185,7 +185,7 @@ int fetch(char * path)
 			print_label(labels[z].key)
 			puts(labels[z].out)
 	
-	for (; current_line < 64; current_line++)
+	for (; current_line < max_height; current_line++)
 		if (ascii_art[current_line][0] != '\0')
 			set_color(ascii_cols[(int) ((float) (current_line) / (float) max_height * (float) flag_max_colors)])
 			printf("%s\n", ascii_art[current_line])
@@ -193,4 +193,4 @@ int fetch(char * path)
 	
 	printf("\n")
 	
-	return 0
+	return
