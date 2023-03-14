@@ -72,7 +72,7 @@ void elf_parser(FILE * fp)
 	add_label("Type", ibuffer[buffer_pos++])
 	
 	
-	spair_parser(ibuffer[buffer_pos], tok[1], elf_arches, sizeof elf_arches / sizeof(spr), "arch")
+	spair_parser(ibuffer[buffer_pos], tok[2], elf_arches, sizeof elf_arches / sizeof(spr), "arch")
 	
 	add_label("Arch", ibuffer[buffer_pos++])
 	
