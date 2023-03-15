@@ -19,7 +19,7 @@ void mach_universal_parser(FILE * fp)
 	advance(tok, 4, fp)
 	
 	bin_count = ((int)tok[3])
-	snprintf(ibuffer[buffer_pos], 2, "%d", tok[3])
+	sprintf(ibuffer[buffer_pos], "%d", tok[3])
 	add_label("Binary count", ibuffer[buffer_pos++])
 	
 	fbyte toki = 0
