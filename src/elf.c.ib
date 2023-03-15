@@ -11,24 +11,22 @@
 #include "elf_type.h"
 #include "elf_osabi.h"
 
-#define MAX_TOK 1018
-
 extern char ibuffer[128][128]
 extern int  buffer_pos
 
 void elf_parser(FILE * fp)
 	
-	byte tok[MAX_TOK]
+	byte tok[16]
 	
 	advance(tok, 5, fp)
 	
 	int bits = 0 // 32 or 64
 	
 	if (tok[0] == 0x01)	
-		bits = 1
+		bits = 4
 		strcpy(ibuffer[buffer_pos], "32 bit")
 	else if (tok[0] == 0x02)
-		bits = 2
+		bits = 8
 		strcpy(ibuffer[buffer_pos], "64 bit")
 	else
 		strcpy(ibuffer[buffer_pos], "unknown")
@@ -79,42 +77,37 @@ void elf_parser(FILE * fp)
 	
 	// do nothing I have no clue how this version is differnt from the previous one
 	
-	advance(tok, bits == 1 ? 4 : 8, fp)
+	advance(tok, bits, fp)
 	
 	address_parser(ibuffer[buffer_pos], tok, bits)
 	
 	add_label("Entry", ibuffer[buffer_pos++])
 	
-	advance(tok, bits == 1 ? 4 : 8, fp)
+	advance(tok, bits, fp)
 	
 	char pgm_table[128]
 	address_parser(pgm_table, tok, bits)
 	
 	unsigned long shoff
-	advance(&shoff, bits == 1 ? 4 : 8, fp)
+	advance(&shoff, bits, fp)
 	
 	char sec_table[128]
 	address_parser(sec_table, &shoff, bits)
 	
-	advance(tok, 4, fp)
+	advance(tok, 10, fp)
 	//do nothing its just same arch specific flags
 	
-	unsigned short tbyte[3]
-	advance(tbyte, 2, fp)
-	
-	sprintf(ibuffer[buffer_pos], "0x%02x", tbyte[0])
+	sprintf(ibuffer[buffer_pos], "0x%02x", tok[4])
 	
 	add_label("ELF Header Size", ibuffer[buffer_pos++])
 	
-	advance(tbyte, 4, fp)
-	
-	sprintf(ibuffer[buffer_pos], "%s (size 0x%02x entries %d)", pgm_table, tbyte[0] , tbyte[1])
+	sprintf(ibuffer[buffer_pos], "%s (size 0x%02x entries %d)", pgm_table, tok[6] , tok[8])
 	add_label("Pgm Table", ibuffer[buffer_pos++])
+	unsigned short tbyte[6]
 	advance(tbyte, 6, fp)
 	
-	sprintf(ibuffer[buffer_pos], "%s (size 0x%02x entries %d using %d)", sec_table, tbyte[0] , tbyte[1], tbyte[2])
+	sprintf(ibuffer[buffer_pos], "%s (size 0x%02x entries %d names %d)", sec_table, tbyte[0] , tbyte[1], tbyte[2])
 	add_label("Sec Table", ibuffer[buffer_pos++])
-	
 	
 	rewind(fp)
 	fseek(fp, shoff, SEEK_SET)
@@ -130,6 +123,5 @@ void elf_parser(FILE * fp)
 		strcpy(ibuffer[buffer_pos], "unstripped")
 	else
 		strcpy(ibuffer[buffer_pos], "stripped")
-	
 	
 	add_label("Striping", ibuffer[buffer_pos++])
