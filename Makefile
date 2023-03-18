@@ -11,7 +11,7 @@ STRIP = strip
 
 CFLAGS ?= -Os -Wall
 CPPFLAGS = -DPREFIX=\"$(PREFIX)\"
-LDFLAGS ?= -flto
+LDFLAGS = -flto
 
 LIBS = -lz -lm
 
