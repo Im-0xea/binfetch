@@ -9,7 +9,8 @@ CC = gcc
 LD = gcc
 STRIP = strip
 
-CFLAGS = -Os -Wall -DPREFIX=\"$(PREFIX)\"
+CFLAGS = -Os -Wall 
+CPPFLAGS = -DPREFIX=\"$(PREFIX)\"
 LDFLAGS = -flto -lm
 
 LIBS = -lz
@@ -22,7 +23,7 @@ HEADERS = $(patsubst $(SRC)/%.h.ib, $(DEST)/%.h, $(IB_HEADERS))
 OBJS = $(patsubst $(SRC)/%.c.ib, $(DEST)/%.o, $(IB_CFILES))
 CFILES = $(patsubst $(SRC)/%.c.ib, $(DEST)/%.c, $(IB_CFILES))
 
-all: $(DEST) check_ib $(PROGRAM)
+all: $(DEST) check_ib show_flags $(PROGRAM)
 
 $(DEST)/%.h: $(SRC)/%.h.ib
 	@echo " IB      $<"
@@ -34,7 +35,7 @@ $(DEST)/%.c: $(SRC)/%.c.ib
 
 $(DEST)/%.o: $(DEST)/%.c
 	@echo " CC      $<"
-	@$(CC) $< $(CFLAGS) -I build -c -o $@ 
+	@$(CC) $< $(CFLAGS) $(CPPFLAGS) -I build -c -o $@ 
 
 $(PROGRAM): $(HEADERS) $(CFILES) $(OBJS)
 	@echo " LD      $(PROGRAM)"
@@ -50,6 +51,10 @@ $(DEST):
 build_ib:
 	$(CC) $(SRC)/ib/ib.c -o ib_strap
 	$(eval IB = ./ib_strap)
+
+show_flags:
+	@echo "CFLAGS = $(CFLAGS)"
+	@echo "LDFLAGS = $(LDFLAGS)"
 
 check_ib:
 	@which ib > /dev/null 2>&1; \
