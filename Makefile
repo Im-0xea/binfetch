@@ -11,9 +11,9 @@ STRIP = strip
 
 CFLAGS ?= -Os -Wall
 CPPFLAGS = -DPREFIX=\"$(PREFIX)\"
-LDFLAGS ?= -flto -lm
+LDFLAGS ?= -flto
 
-LIBS = -lz
+LIBS = -lz -lm
 
 PROGRAM = binfetch
 
