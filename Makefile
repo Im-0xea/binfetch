@@ -5,13 +5,13 @@ SRC = ./src
 DEST = ./build
 
 IB = ib
-CC = gcc
-LD = gcc
+CC ?= gcc
+LD = $(CC)
 STRIP = strip
 
-CFLAGS = -Os -Wall 
+CFLAGS ?= -Os -Wall
 CPPFLAGS = -DPREFIX=\"$(PREFIX)\"
-LDFLAGS = -flto -lm
+LDFLAGS ?= -flto -lm
 
 LIBS = -lz
 
