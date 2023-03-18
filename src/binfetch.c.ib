@@ -59,6 +59,7 @@ void print_label(const char * label)
 	const char set[] = " .o+=*B0X@%&#/^SE"
 	if (ascii_art[current_line][0] != '\0')
 		int x = 0
+		int ckdi = 0
 		while (ascii_art[current_line][x] != '\0')
 			switch (cclr)
 				case hor:
@@ -71,7 +72,7 @@ void print_label(const char * label)
 					set_color(ascii_cols[(int)floor((float) (current_line + x) / (float) (max_width + max_height) * (float) flag_max_colors)])
 					break
 				case val:
-					int ckdi = 0
+					ckdi = 0
 					while (ckdi < 14)
 						if (ascii_art[current_line][x] == set[ckdi])
 							break
