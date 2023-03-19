@@ -30,6 +30,8 @@ label labels[128]
 int  label_order_count = 0
 char label_order[128][128]
 
+bool bold = false
+
 int current_line
 int max_width
 int max_height
@@ -61,6 +63,7 @@ void print_label(const char * label)
 		int x = 0
 		int ckdi = 0
 		while (ascii_art[current_line][x] != '\0')
+			if (bold) set_bold()
 			switch (cclr)
 				case hor:
 					set_color(ascii_cols[(int)floor((float) current_line / (float) (max_height) * (float) flag_max_colors)])
@@ -85,6 +88,7 @@ void print_label(const char * label)
 		printf("  ")
 	else if (current_line != 0)
 		printf("%*s  ", max_width, " ")
+	if (bold) set_bold()
 	set_color(main_cols[(int)floor((float) current_line / (float) (label_count) * (float) main_max_colors)])
 	printf("%s: ", label)
 	set_blank()

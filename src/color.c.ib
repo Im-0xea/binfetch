@@ -5,5 +5,8 @@
 void set_color(const tcolor c)
 	printf("\033[38;2;%d;%d;%dm", c.r, c.g, c.b)
 
+void set_bold(void)
+	printf("\033[1m")
+
 void set_blank(void)
 	printf("\033[0m")

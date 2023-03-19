@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "pair.h"
@@ -15,6 +16,7 @@ extern char label_order[128][128]
 extern int  label_order_count
 extern int flag_max_colors
 extern int main_max_colors
+extern bool bold
 
 typedef enum coloring
 	hor
@@ -79,6 +81,14 @@ void parse_cfg(const char * path)
 					break
 				if (!strncmp("value", tok + 1, 5))
 					cclr = val
+					break
+		
+		if (!strncmp("[attributes]", tok, 7))
+			while (fgets(tok, 128, fp))
+				if (tok[0] != '\t')
+					break
+				if (!strncmp("bold", tok + 1, 4))
+					bold = true
 					break
 	
 	fclose(fp)

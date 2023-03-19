@@ -40,4 +40,5 @@ static const tcolor yellow =
 	52
 
 void set_color(const tcolor c)
+void set_bold(void)
 void set_blank(void)
