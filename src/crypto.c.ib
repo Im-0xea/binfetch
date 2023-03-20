@@ -26,9 +26,9 @@ unsigned int get_checksum(FILE * fp)
 	return sum
 
 void drunken_bishop(FILE * fp)
-	const int w = 18
-	const int h = 10
-	const int it = 200
+	const int w = 28
+	const int h = 16
+	const int it = 500
 	const char set[] = " .o+=*B0X@%&#/^SE"
 	
 	srand(get_checksum(fp))

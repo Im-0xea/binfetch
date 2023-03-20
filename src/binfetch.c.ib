@@ -57,7 +57,7 @@ typedef enum coloring
 clr
 extern clr cclr
 
-void print_label(const char * label)
+void print_label(const char * label, const bool name)
 	const char set[] = " .o+=*B0X@%&#/^SE"
 	if (ascii_art[current_line][0] != '\0')
 		int x = 0
@@ -89,8 +89,8 @@ void print_label(const char * label)
 	else if (current_line != 0)
 		printf("%*s  ", max_width, " ")
 	if (bold) set_bold()
-	set_color(main_cols[(int)floor((float) current_line / (float) (label_count) * (float) main_max_colors)])
-	printf("%s: ", label)
+	set_color(main_cols[(int)floor((float) current_line / (float) (label_count + 2) * (float) main_max_colors)])
+	if (!name) printf("%s: ", label)
 	set_blank()
 	current_line++
 
@@ -111,9 +111,6 @@ void fetch(char * path)
 		bzero(ascii_art[i], 64)
 	
 	drunken_bishop(fp)
-	
-	strcpy(ibuffer[buffer_pos], basename(path))
-	add_label("Name", ibuffer[buffer_pos++])
 	
 	fbyte tok = 0
 	
@@ -182,23 +179,29 @@ void fetch(char * path)
 	get_size(ibuffer[buffer_pos], sz)
 	add_label("Size", ibuffer[buffer_pos++])
 	
+	print_label("Name", true)
+	puts(basename(path))
+	print_label("Name", true)
+	for (int dl = 0; dl < strlen(basename(path)); dl++)
+		printf("%c", '-')
+	printf("%c", '\n')
+	
 	for (int x = 0; x < label_order_count; x++)
 		for (int y = 0; y < label_count; y++)
 			if (!strcmp(label_order[x], labels[y].key))
-				print_label(labels[y].key)
+				print_label(labels[y].key, false)
 				puts(labels[y].out)
 				labels[y].used = true
 	
 	for (int z = 0; z < label_count; z++)
 		if (!labels[z].used)
-			print_label(labels[z].key)
+			print_label(labels[z].key, false)
 			puts(labels[z].out)
 	
-	for (; current_line < max_height; current_line++)
+	for (; current_line < max_height;)
 		if (ascii_art[current_line][0] != '\0')
-			set_color(ascii_cols[(int) ((float) (current_line) / (float) max_height * (float) flag_max_colors)])
-			printf("%s\n", ascii_art[current_line])
-			set_blank()
+			print_label("end", true)
+			printf("%c", '\n')
 	
 	printf("\n")
 	
