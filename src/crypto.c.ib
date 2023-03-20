@@ -42,20 +42,24 @@ void drunken_bishop(FILE * fp)
 	while (i < it)
 		switch (rand() % 4)
 			case 0: // up left
-				if (x > 0 && y < h - 1)
-					++map[++y][--x]
+				if (x > 0) x--
+				if (y < h - 1) y++
+				++map[y][x]
 				break
 			case 1: // up right
-				if (x < w - 1 && y < h - 1)
-					++map[++y][++x]
+				if (x < w - 1) x++
+				if (y < h - 1) y++
+				++map[y][x]
 				break
 			case 2: // down left
-				if (x > 0 && y > 0)
-					++map[--y][--x]
+				if (x > 0) x--
+				if (y > 0) y--
+				++map[y][x]
 				break
 			case 3: // down right
-				if (x < w - 1 && y > 0)
-					++map[--y][++x]
+				if (x < w - 1) x++
+				if (y > 0) y--
+				++map[y][x]
 				break
 		++i
 	
