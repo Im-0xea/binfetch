@@ -3,7 +3,8 @@
 #include "color.h"
 
 void set_color(const tcolor c)
-	printf("\033[38;2;%d;%d;%dm", c.r, c.g, c.b)
+	const int code = 16 + (36 * (int) (c.r /255.0 * 5)) + ( 6 * (int) (c.g / 255.0 * 5)) + (int) (c.b / 255.0 * 5)
+	printf("\033[38;5;%dm", code)
 
 void set_bold(void)
 	printf("\033[1m")
