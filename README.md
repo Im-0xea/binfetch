@@ -1,14 +1,14 @@
 # Binfetch
 
-A neofetch inspired fetching utility for executables, written in [ib](https://github.com/Nik-Nothing/ibranching) C
+A neofetch inspired fetching utility for executables, written in [ib](https://github.com/Im-0xea/ibranching) C
 
 ![image](https://socki.moe/binfetch.png "img")
 
 ### Packages
 
-- gentoo [my ebuild repo](https://github.com/Nik-Nothing/niki-gentoo)
-- nix [this repo is a flake](https://github.com/Nik-Nothing/binfetch)
-- arch [AUR](https://aur.archlinux.org/packages/binfetch-git) [my pkgbuild repo](https://github.com/Nik-Nothing/niki-pacman)
+- gentoo [my ebuild repo](https://github.com/Im-0xea/xea-ebuilds)
+- nix [this repo is a flake](https://github.com/Im-0xea/binfetch)
+- arch [AUR](https://aur.archlinux.org/packages/binfetch-git) [my pkgbuild repo](https://github.com/Im-0xea/xea-pkgbuilds)
 
 ### Build
 
@@ -16,7 +16,7 @@ A neofetch inspired fetching utility for executables, written in [ib](https://gi
 
 - libc (manic laughter)
 - zlib
-- [ib](https://github.com/Nik-Nothing/ibranching)
+- [ib](https://github.com/Im-0xea/ibranching)
 
 if you are too lazy to install ib run 'make bootstrap' instead of 'make'
 
