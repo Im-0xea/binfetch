@@ -1,34 +1,68 @@
 # Binfetch
 
-A neofetch inspired fetching utility for executables, written in [ib](https://github.com/Im-0xea/ibranching) C
+A neofetch inspired fetching utility for executables.
 
 ![image](https://socki.moe/binfetch.png "img")
 
 ### Packages
 
 - gentoo [my ebuild repo](https://github.com/Im-0xea/xea-ebuilds)
-- nix [this repo is a flake](https://github.com/Im-0xea/binfetch)
 - arch [AUR](https://aur.archlinux.org/packages/binfetch-git) [my pkgbuild repo](https://github.com/Im-0xea/xea-pkgbuilds)
 
 ### Build
 
 #### Depends on:
 
-- libc (manic laughter)
+- libc
+- libelf 
 - zlib
-- [ib](https://github.com/Im-0xea/ibranching)
-
-if you are too lazy to install ib run 'make bootstrap' instead of 'make'
 
 ~~~
-$ make (bootstrap)
-~~~
-~~~
-$ (root) make install
+$ meson setup build
+$ ninja -C build
+$ ninja -C build install
 ~~~
 
 ### Configuration
 
-by default the config is stored and read from /usr/share/binfetch/binfetch.cfg
+~~~
+# - ~/.config/binfetch/binfetch.cfg
 
-if you want to set a custom config or use one of the other provided schemes simply copy them to .config/binfetch/binfetch.cfg
+# Array of colors for data labels
+[label_colors]
+    #F5A9B8
+
+# Array of colors for flag
+[art_colors]
+    #5BCEFA
+    #F5A9B8
+    #FFFFFF
+    #F5A9B8
+    #5BCEFA
+
+# Order and whitelist for data labels
+[order]
+    Name
+    Header
+    Type
+    Version
+    Arch
+    Class
+    Endian
+    OS ABI
+    ABI Version
+    Entry
+    Table
+    Interpreter
+    Size
+    Arches
+    Binary count
+
+# Coloring pattern for flag
+[pattern]
+    value
+
+# Text attributes
+[attributes]
+    bold
+~~~

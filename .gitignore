@@ -1,8 +1,4 @@
 binfetch
-ib_strap
 *.o
-*.h
-*.c
-!src/ib/ib.c
 *.swp
 build
