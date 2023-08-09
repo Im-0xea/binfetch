@@ -22,7 +22,7 @@ void elf_parser(FILE * fp)
 {
 	Elf *e;
 	GElf_Ehdr ehdr;
-	
+
 	if (elf_version(EV_CURRENT) == EV_NONE) {
 		printf("failed to initilize libelf: %s", elf_errmsg(-1));
 		return;
@@ -92,8 +92,6 @@ void elf_parser(FILE * fp)
 	spair_parser(ibuffer[buffer_pos], ehdr.e_machine, elf_arches, sizeof elf_arches / sizeof(struct spr), "arch");
 
 	add_label("Arch", ibuffer[buffer_pos++]);
-
-	// do nothing I have no clue how this version is differnt from the previous one
 
 	sprintf(ibuffer[buffer_pos], "0x%jx", ehdr.e_entry);
 	add_label("Entry", ibuffer[buffer_pos++]);

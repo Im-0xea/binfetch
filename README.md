@@ -11,7 +11,7 @@ A neofetch inspired fetching utility for executables.
 
 ### Build
 
-#### Depends on:
+##### Depends on:
 
 - libc
 - libelf 
@@ -65,4 +65,11 @@ $ ninja -C build install
 # Text attributes
 [attributes]
     bold
+~~~
+
+##### Colors
+
+If you are in a graphical virtual terminal and you are getting rough colors, you might be using a termial that simiar to mine does not set "COLORTERM" nor have a termcap entry with color256 at the end, to fix this for binfetch simply add the following to any config which sets envvars for your shell, such as .{ash,bash,zsh}rc.
+~~~
+[ "$TERM" = "<name of term>" ] && export COLORTERM=""
 ~~~
