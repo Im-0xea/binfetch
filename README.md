@@ -17,10 +17,19 @@ A neofetch inspired fetching utility for executables.
 - libelf 
 - zlib
 
+##### Meson
+
 ~~~
 $ meson setup build
 $ ninja -C build
 $ ninja -C build install
+~~~
+
+##### Gmake
+
+~~~
+$ make
+$ make install
 ~~~
 
 ### Configuration
