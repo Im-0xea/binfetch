@@ -1,4 +1,5 @@
 #include <arpa/inet.h>
+#include <errno.h>
 #include <libgen.h>
 #include <math.h>
 #include <stdio.h>
@@ -51,7 +52,8 @@ void print_label(const char * label, const bool name)
 		int x = 0;
 		int ckdi = 0;
 		while (ascii_art[current_line][x] != '\0') {
-			if (bold) set_bold();
+			if (bold)
+				set_bold();
 			switch (cclr) {
 			case hor:
 				set_color(ascii_cols[(int)floor((float) current_line / (float) (max_height) * (float) flag_max_colors)]);
@@ -65,7 +67,8 @@ void print_label(const char * label, const bool name)
 			case val:
 				ckdi = 0;
 				while (ckdi < 14) {
-					if (ascii_art[current_line][x] == set[ckdi]) break;
+					if (ascii_art[current_line][x] == set[ckdi])
+						break;
 					++ckdi;
 				}
 				set_color(ascii_cols[(int)floor((float) ckdi / (float) 14 * (float) flag_max_colors)]);
@@ -79,9 +82,11 @@ void print_label(const char * label, const bool name)
 	} else if (current_line != 0) {
 		printf("%*s  ", max_width, " ");
 	}
-	if (bold) set_bold();
+	if (bold)
+		set_bold();
 	set_color(main_cols[(int)floor((float) current_line / (float) (label_count + 2) * (float) main_max_colors)]);
-	if (!name) printf("%s: ", label);
+	if (!name)
+		printf("%s: ", label);
 	set_blank();
 	current_line++;
 }
@@ -91,8 +96,8 @@ void fetch(char * path)
 	FILE * fp = fopen(path, "rb");
 
 	if (!fp) {
-		perror("failed to open binary");
-		return;
+		fprintf(stderr, "failed to open binary %s: %s\n", path, strerror(errno));
+		exit(1);
 	}
 
 	label_count = 0;
@@ -167,11 +172,8 @@ void fetch(char * path)
 
 	fseek(fp, 0L, SEEK_END);
 	size_t sz = ftell(fp);
-	if (fclose(fp)) {
-		perror("failed to close binary");
-		exit(1);
-	}
-
+	fclose(fp);
+	
 	get_size(ibuffer[buffer_pos], sz);
 	add_label("Size", ibuffer[buffer_pos++]);
 
@@ -207,6 +209,4 @@ void fetch(char * path)
 	}
 
 	printf("\n");
-
-	return;
 }

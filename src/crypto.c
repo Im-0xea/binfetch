@@ -36,38 +36,33 @@ void drunken_bishop(FILE * fp)
 
 	srandom(get_checksum(fp));
 
-	int map[256][256];
+	uint8_t map[h][w];
 	for (int bz = 0; bz < h; ++bz)
 		bzero(map[bz], w);
 
 	int x = random() % w, y = random() % h;
-	int i = 0;
-	while (i < it) {
+	for (int i = 0; i < it; ++i) {
 		switch (random() % 4) {
 		case 0: // up left
 			if (x > 0) x--;
 			if (y < h - 1) y++;
-			++map[y][x];
 			break;
 		case 1: // up right
 			if (x < w - 1) x++;
 			if (y < h - 1) y++;
-			++map[y][x];
 			break;
 		case 2: // down left
 			if (x > 0) x--;
 			if (y > 0) y--;
-			++map[y][x];
 			break;
 		case 3: // down right
 			if (x < w - 1) x++;
 			if (y > 0) y--;
-			++map[y][x];
 			break;
 		}
-		++i;
+		++map[y][x];
 	}
-	
+
 	max_width = w;
 	max_height = h;
 	for (y = 0; y < h; ++y) {

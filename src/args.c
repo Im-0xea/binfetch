@@ -26,8 +26,9 @@ int main(int argc, char **argv)
 	char * config = NULL;
 	do {
 		const int opt = getopt_long(argc, argv, short_options, long_options, NULL);
-		
-		if (opt == -1) break;
+
+		if (opt == -1)
+			break;
 
 		switch (opt) {
 		default:
@@ -46,12 +47,10 @@ int main(int argc, char **argv)
 			config = optarg;
 			break;
 		}
-	} while (0);
+	} while (1);
 
 	if (optind >= argc) {
-		set_color(red);
-		printf("you did not provide a binary\n");
-		set_blank();
+		fprintf(stderr, "you did not provide a binary\n");
 		return 1;
 	}
 

@@ -31,10 +31,12 @@ void get_size(char * out, size_t in)
 		"PB",
 		"EB"
 	};
-	
+
 	int p = 1;
-	while (in >= pow(2, 10 * p)) p++;
-	if (p > 7) p = 7;
+	while (in >= pow(2, 10 * p))
+		p++;
+	if (p > 7)
+		p = 7;
 	sprintf(out, "%.1f %s", (double) in / pow(2, 10 * (p - 1)), ends[p - 1]);
 }
 

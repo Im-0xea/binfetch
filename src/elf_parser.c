@@ -1,4 +1,5 @@
 #include <elf.h>
+#include <errno.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -83,7 +84,7 @@ void elf_parser(FILE * fp)
 	} else {
 		ibuffer[buffer_pos][0] = '\0';
 	}
-	
+
 	spair_parser(ibuffer[buffer_pos], ehdr.e_type, elf_types, sizeof elf_types / sizeof(struct spr), "type");
 
 	add_label("Type", ibuffer[buffer_pos++]);
@@ -108,23 +109,27 @@ void elf_parser(FILE * fp)
 	add_label("Sec Table", ibuffer[buffer_pos++]);
 
 	rewind(fp);
-	fseek(fp, ehdr.e_shoff, SEEK_SET);
-	int current_sec = 0;
-	bool unstriped = 0;
-	unsigned int sec[15];
-	for (; current_sec < ehdr.e_shnum; ++current_sec) {
-		advance(sec, ehdr.e_shentsize, fp);
-		if (sec[1] == 0x2) {
-			unstriped = true;
+	if (!fseek(fp, ehdr.e_shoff, SEEK_SET)) {
+		int current_sec = 0;
+		bool unstriped = 0;
+		unsigned int sec[15];
+		for (; current_sec < ehdr.e_shnum; ++current_sec) {
+			if (!fread(sec, ehdr.e_shentsize, 1, fp)) {
+				break;
+			}
+			if (sec[1] == 0x2) {
+				unstriped = true;
+				break;
+			}
 		}
-	}
 
-	if (unstriped) {
-		strcpy(ibuffer[buffer_pos], "unstripped");
-	} else {
-		strcpy(ibuffer[buffer_pos], "stripped");
-	}
+		if (unstriped) {
+			strcpy(ibuffer[buffer_pos], "unstripped");
+		} else {
+			strcpy(ibuffer[buffer_pos], "stripped");
+		}
 
-	add_label("Striping", ibuffer[buffer_pos++]);
+		add_label("Striping", ibuffer[buffer_pos++]);
+	}
 	elf_end(e);
 }

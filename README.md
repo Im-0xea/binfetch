@@ -14,7 +14,8 @@ A neofetch inspired fetching utility for executables.
 ##### Depends on:
 
 - libc
-- libelf 
+- libconfuse
+- libelf
 - zlib
 
 ##### Meson

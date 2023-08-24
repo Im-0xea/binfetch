@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <confuse.h>
+
 #include "color.h"
 #include "pair.h"
 #include "info.h"

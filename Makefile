@@ -16,45 +16,36 @@ LIBS := \
 	$(shell pkg-config --libs zlib) \
 	$(shell pkg-config --libs libelf)
 
-.SUFFIXES: .c .o
+SRC = $(wildcard src/*.c)
 
-OBJS = \
-	src/args.o \
-	src/binfetch.o \
-	src/bin_op.o \
-	src/color.o \
-	src/config.o \
-	src/crypto.o \
-	src/elf_parser.o \
-	src/info.o \
-	src/jvm.o \
-	src/mach.o \
-	src/mz.o \
-	src/pair.o \
-	src/pe.o \
-	src/sh.o \
-	src/uf2.o
+OBJ = $(patsubst src/%.c, build/%.o, $(SRC))
 
 PRG = binfetch
+B = build
+S = src
 
-all: $(PRG)
+all: $(B)/$(PRG)
 
-$(OUT):
-	mkdir -p $(OUT)
-
-.c.o:
+$(B)/%.o: $(S)/%.c
 	@echo "  CC      $<"
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
-$(PRG): $(OBJS)
+$(B)/$(PRG): $(OBJ)
 	@echo "  LD      $(PRG)"
-	@$(LD) $(LDFLAGS) $(LIBS) -o $(PRG) $(OBJS)
+	@$(LD) $(LDFLAGS) $(LIBS) -o $(PRG) $(OBJ)
+
+$(B):
+	mkdir -p build
 
 install:
 	@echo "  INSTALL $(PRG)"
 	@mkdir -p $(DESTDIR)/$(PREFIX)/bin
 	@cp $(PRG) $(DESTDIR)/$(PREFIX)/bin/
 
+test:
+	@echo "  TESTING"
+	@./$(PRG) $(PRG)
+
 clean:
 	@echo "  CLEAN"  
-	@rm -f $(OBJS) $(PRG)
+	@rm -f $(OBJ) $(PRG)
